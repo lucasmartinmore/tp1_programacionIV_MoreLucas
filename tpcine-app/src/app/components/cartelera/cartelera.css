@@ -1,0 +1,120 @@
+/*=======================================================================================================
+  =                                ESTILOS DE CARTELERA                                                 =
+  =======================================================================================================
+*/
+
+.cartelera-contenedor {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 36px 20px;
+}
+
+h2 {
+  font-family: var(--fuente-retro);
+  font-size: 2rem;
+  color: var(--color-amarillo);
+  letter-spacing: 2px;
+  margin-bottom: 26px;
+  text-shadow: 2px 2px 0px var(--color-rojo-vintage);
+  border-left: 6px solid var(--color-cyan-vintage);
+  padding-left: 14px;
+}
+
+.grid-peliculas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+.card-pelicula {
+  background-color: #0b1f28; 
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-pelicula:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
+}
+
+.poster-contenedor {
+  width: 100%;
+  height: 360px;
+  overflow: hidden;
+  background-color: #000;
+}
+
+.poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+.card-info {
+  background-color: #004d5a; 
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.card-titulo {
+  font-family: var(--fuente-retro);
+  font-size: 1.15rem;
+  color: #f7a827; 
+  margin: 0 0 10px 0;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+}
+
+.detalle-texto {
+  margin: 2px 0;
+  font-size: 0.85rem;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.detalle-texto strong {
+  color: #fff;
+}
+
+.sinopsis {
+  font-size: 0.8rem;
+  color: #72cbd8; 
+  margin: 10px 0 16px 0;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex-grow: 1;
+}
+
+.btn-funciones {
+  width: 100%;
+  padding: 10px;
+  background-color: #e64c23; 
+  color: #ffffff;
+  font-family: var(--fuente-retro);
+  font-size: 0.85rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  border: 1px solid #ff7b54;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.btn-funciones:hover {
+  background-color: #c93b14;
+  transform: translateY(-1px);
+}

@@ -1,0 +1,39 @@
+<section class="proximamente-contenedor">
+  <div class="header-seccion">
+    <h2 class="titulo-seccion">PRÓXIMAMENTE</h2>
+    <p class="subtitulo">Los estrenos más esperados que están por llegar a Cinemore.</p>
+  </div>
+
+  <div *ngIf="cargando" class="cargando">
+    <p>Cargando próximos estrenos...</p>
+  </div>
+
+  <div *ngIf="!cargando && peliculasProximas.length === 0" class="sin-peliculas">
+    <p>No hay estrenos programados por el momento...</p>
+  </div>
+
+  <div class="grid-peliculas" *ngIf="!cargando">
+    <div class="card-pelicula" *ngFor="let peli of peliculasProximas">
+      <div class="poster-contenedor">
+        <img [src]="peli.imagen_url" [alt]="peli.titulo_de_pelicula" class="poster">
+        <span class="badge-estreno">ESTRENO PRONTO</span>
+      </div>
+
+      <div class="card-info">
+        <h3 class="card-titulo">{{ peli.titulo_de_pelicula }}</h3>
+        
+        <p class="detalle-texto">
+          <strong>Duración:</strong> {{ peli.duracion_minutos }} min
+        </p>
+        <p class="detalle-texto">
+          <strong>Clasificación:</strong> {{ peli.restriccion_de_edad === 0 ? 'ATP' : '+' + peli.restriccion_de_edad }}
+        </p>
+        <p class="sinopsis">{{ peli.sinopsis_de_pelicula }}</p>
+
+        <button class="btn-alerta" (click)="activarAlerta(peli.titulo_de_pelicula)">
+           ACTIVAR ALERTA
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

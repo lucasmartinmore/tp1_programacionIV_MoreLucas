@@ -1,0 +1,35 @@
+<div class="cartelera-contenedor">
+  <h2> Cartelera </h2>
+
+  @if (cargando()) {
+    <p>Cargando peliculas...</p>
+  } @else if (peliculas().length === 0) {
+    <p>No hay peliculas en cartelera disponible...</p>
+  } @else {
+    <div class="grid-peliculas">
+      @for (peli of peliculas(); track peli.id_pelicula) {
+        <div class="card-pelicula">
+          <div class="poster-contenedor">
+            <img [src]="peli.imagen_url || 'https://via.placeholder.com/300x450'" [alt]="peli.titulo_de_pelicula" class="poster">
+          </div>
+
+          <div class="card-info">
+            <h3 class="card-titulo">{{ peli.titulo_de_pelicula }}</h3>
+            
+            <p class="detalle-texto">
+              <strong>Duración:</strong> {{ peli.duracion_minutos }} min
+            </p>
+            <p class="detalle-texto">
+              <strong>Clasificación:</strong> {{ peli.restriccion_de_edad === 0 ? 'ATP' : '+' + peli.restriccion_de_edad }}
+            </p>
+            <p class="sinopsis">{{ peli.sinopsis_de_pelicula }}</p>
+
+            <button class="btn-funciones" (click)="seleccionarPelicula(peli.id_pelicula)">
+              VER FUNCIONES
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

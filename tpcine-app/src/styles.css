@@ -1,0 +1,39 @@
+/*=======================================================================================================
+  =                                ESTILOS GENERALES                                                    =
+  =======================================================================================================
+*/
+
+:root {
+  /* ******* Fondo general ******** */
+  --color-fondo: #241a15;
+  
+  /* ******* Fondo de tarjetas ******** */
+  --color-card: #33241d;
+  --color-card-hover: #3d2b23;
+  
+  /* ******* Paleta general ******** */
+  --color-navbar: #1b6b70;           
+  --color-cyan-vintage: #208b90;     
+  --color-rojo-vintage: #a31432;     
+  --color-naranja: #e43f17;         
+  --color-amarillo: #f7b218;         
+  --color-crema: #fdf3dc;            
+  
+  /* ******* Fuente general ******** */
+  --fuente-retro: 'Bungee', cursive, sans-serif;
+  --fuente-texto: 'Outfit', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--color-fondo);
+  color: var(--color-crema);
+  font-family: var(--fuente-texto);
+}
