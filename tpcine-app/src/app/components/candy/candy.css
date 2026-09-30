@@ -1,0 +1,227 @@
+.candy-contenedor {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 30px 16px 90px 16px;
+  color: var(--color-crema, #fdf3dc);
+}
+
+.candy-encabezado {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.candy-encabezado h2 {
+  font-family: var(--fuente-retro, monospace);
+  font-size: 2rem;
+  color: var(--color-amarillo, #f7b218);
+  letter-spacing: 2px;
+  margin: 0 0 6px 0;
+  text-transform: uppercase;
+}
+
+.candy-encabezado p {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.cargando {
+  text-align: center;
+  color: #94a3b8;
+  padding: 60px 20px;
+  font-size: 1.1rem;
+}
+
+/* GRILLA RESPONSIVE DE PRODUCTOS */
+.grilla-candy {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 22px;
+}
+
+/* TARJETA DE CADA PRODUCTO */
+.tarjeta-candy {
+  background-color: #1a2736;
+  border: 1.5px solid rgba(253, 243, 220, 0.12);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tarjeta-candy:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-amarillo, #f7b218);
+  box-shadow: 0 12px 24px rgba(247, 178, 24, 0.15);
+}
+
+.img-wrap {
+  position: relative;
+  width: 100%;
+  height: 170px;
+  background-color: #0b1118;
+  overflow: hidden;
+}
+
+.img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.tarjeta-candy:hover .img-wrap img {
+  transform: scale(1.05);
+}
+
+.badge-categoria {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(18, 71, 74, 0.9);
+  color: var(--color-amarillo, #f7b218);
+  font-size: 0.72rem;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--color-amarillo, #f7b218);
+  backdrop-filter: blur(4px);
+}
+
+.info-candy {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-grow: 1;
+}
+
+.info-candy h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.descripcion {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.precio {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--color-amarillo, #f7b218);
+  margin-top: 6px;
+}
+
+/* BOTÓN AGREGAR Y CONTADOR +/- */
+.acciones-candy {
+  padding: 0 16px 16px 16px;
+}
+
+.btn-agregar {
+  width: 100%;
+  background-color: #e43f17;
+  color: #ffffff;
+  border: 1px solid var(--color-amarillo, #f7b218);
+  font-family: var(--fuente-retro, sans-serif);
+  font-weight: bold;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.btn-agregar:hover {
+  background-color: #c9330f;
+  transform: scale(1.02);
+}
+
+.contador {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #0e1620;
+  border: 1.5px solid var(--color-amarillo, #f7b218);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.contador button {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 1.3rem;
+  font-weight: bold;
+  width: 44px;
+  height: 38px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease;
+}
+
+.contador button:hover {
+  background-color: #e43f17;
+}
+
+.numero-cant {
+  font-weight: 800;
+  color: var(--color-amarillo, #f7b218);
+  font-size: 1.1rem;
+}
+
+/* BARRA FIJA INFERIOR DE RESUMEN */
+.panel-resumen-candy {
+  position: sticky;
+  bottom: 16px;
+  margin-top: 30px;
+  background-color: #12474a;
+  border: 2px solid var(--color-amarillo, #f7b218);
+  border-radius: 10px;
+  padding: 14px 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.65);
+  z-index: 20;
+}
+
+.texto-items {
+  font-size: 0.95rem;
+  color: #cbd5e1;
+  margin-right: 8px;
+}
+
+.total-monto {
+  font-size: 1.4rem;
+  color: var(--color-amarillo, #f7b218);
+  font-weight: 800;
+}
+
+.btn-continuar {
+  background-color: #e43f17;
+  color: #ffffff;
+  border: 1px solid var(--color-amarillo, #f7b218);
+  font-family: var(--fuente-retro, sans-serif);
+  font-weight: bold;
+  padding: 10px 22px;
+  border-radius: 6px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: transform 0.1s ease, background-color 0.15s ease;
+}
+
+.btn-continuar:hover {
+  background-color: #c9330f;
+  transform: scale(1.03);
+}

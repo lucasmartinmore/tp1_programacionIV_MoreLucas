@@ -1,0 +1,62 @@
+<div class="sala-contenedor">
+  <div class="pantalla-wrap">
+    <div class="pantalla-barra"></div>
+    <span class="pantalla-texto">PANTALLA</span>
+  </div>
+
+  @if (cargando()) {
+    <p class="cargando">Cargando sala...</p>
+  } @else {
+    <div class="mapa-grid">
+      @for (fila of filas(); track fila.letra) {
+        <div class="fila-asientos">
+          <span class="letra-fila">{{ fila.letra }}</span>
+
+          <div class="butacas-fila">
+            @for (b of fila.butacas; track b.id_butaca) {
+              <button 
+                type="button"
+                class="asiento" 
+                [ngClass]="[
+                  b.tipo.toLowerCase(), 
+                  b.ocupada ? 'ocupado' : '', 
+                  b.seleccionada ? 'seleccionado' : '',
+                  (b.columna === 4 || b.columna === 24) ? 'pasillo-derecho' : ''
+                ]"
+                [disabled]="b.ocupada"
+                (click)="seleccionarButaca(b)"
+                [title]="'Fila ' + b.fila + ' - Asiento ' + b.columna">
+              </button>
+            }
+          </div>
+
+          <span class="letra-fila">{{ fila.letra }}</span>
+        </div>
+      }
+    </div>
+
+    <!-- Leyenda -->
+    <div class="leyenda">
+      <div class="item-leyenda"><span class="muestra estandar"></span> Estándar</div>
+      <div class="item-leyenda"><span class="muestra accesible"></span> Accesible (J-K)</div>
+      <div class="item-leyenda"><span class="muestra vip"></span> VIP (R-S-T)</div>
+      <div class="item-leyenda"><span class="muestra ocupado"></span> Ocupada</div>
+      <div class="item-leyenda"><span class="muestra seleccionado"></span> Tu Selección</div>
+    </div>
+
+    <!-- Resumen -->
+    @if (butacasElegidas().length > 0) {
+      <div class="panel-resumen">
+        <div>
+          <p><strong>Butacas:</strong> 
+            @for (b of butacasElegidas(); track b.id_butaca) {
+              <span class="chip-butaca">{{ b.fila }}{{ b.columna }}</span>
+            }
+          </p>
+          <h4>Total: ${{ precioTotal() }}</h4>
+        </div>
+        <button class="btn-continuar" routerLink="/candy">CONTINUAR AL CANDY</button>
+      </div>
+    }
+  }
+</div>

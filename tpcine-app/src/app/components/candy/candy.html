@@ -1,1 +1,53 @@
-<p>candy works!</p>
+<div class="candy-contenedor">
+  <header class="candy-encabezado">
+    <h2>CANDY BAR RETRO</h2>
+    <p>Sumá tus combos y pochoclos favoritos a la función</p>
+  </header>
+
+  @if (cargando()) {
+    <p class="cargando">Cargando delicias del candy...</p>
+  } @else {
+    <div class="grilla-candy">
+      @for (prod of productos(); track prod.id_producto) {
+        <div class="tarjeta-candy">
+          <div class="img-wrap">
+            <img [src]="prod.imagen_url" [alt]="prod.nombre_producto" loading="lazy" />
+            <span class="badge-categoria">{{ prod.categoria_producto }}</span>
+          </div>
+
+          <div class="info-candy">
+            <h3>{{ prod.nombre_producto }}</h3>
+            <p class="descripcion">{{ prod.descripcion_producto }}</p>
+            <span class="precio">${{ prod.precio_producto }}</span>
+          </div>
+
+          <div class="acciones-candy">
+            @if (getCantidad(prod.id_producto) === 0) {
+              <button type="button" class="btn-agregar" (click)="sumarProducto(prod)">
+                AGREGAR
+              </button>
+            } @else {
+              <div class="contador">
+                <button type="button" class="btn-menos" (click)="restarProducto(prod)">-</button>
+                <span class="numero-cant">{{ getCantidad(prod.id_producto) }}</span>
+                <button type="button" class="btn-mas" (click)="sumarProducto(prod)">+</button>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    @if (totalCandy() > 0) {
+      <footer class="panel-resumen-candy">
+        <div>
+          <span class="texto-items">Candy bar:</span>
+          <strong class="total-monto">${{ totalCandy() }}</strong>
+        </div>
+        <div class="botones-paso">
+          <button class="btn-continuar" routerLink="/club-puntos">Continuar</button>
+        </div>
+      </footer>
+    }
+  }
+</div>

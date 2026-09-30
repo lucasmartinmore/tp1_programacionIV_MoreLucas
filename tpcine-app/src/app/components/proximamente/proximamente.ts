@@ -1,48 +1,33 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, signal } from '@angular/core';
+import { Pelicula } from '../../models/pelicula';
 import { Peliculas } from '../../services/peliculas';
 
 @Component({
   selector: 'app-proximamente',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './proximamente.html',
   styleUrl: './proximamente.css'
 })
 export class Proximamente implements OnInit {
-  peliculasProximas: any[] = [];
-  cargando: boolean = true;
+  peliculasProximas = signal<Pelicula[]>([]);
+  cargando = signal<boolean>(true);
 
-  constructor(
-    private peliculasService: Peliculas,
-    private cd: ChangeDetectorRef
-  ) {}
+  constructor(private peliculasService: Peliculas) {}
 
   ngOnInit(): void {
     this.cargarEstrenos();
   }
 
-  async cargarEstrenos(): Promise<void> {
-    this.cargando = true;
-
-    try {
-      const { data, error } = await this.peliculasService.getProximosEstrenos();
-
-      if (error) {
-        console.error('Error reportado por Supabase:', error.message);
-      } else {
-        this.peliculasProximas = data || [];
-      }
-    } catch (err: any) {
-      console.error('Error inesperado:', err);
-    } finally {
-      this.cargando = false;
-      // Notifica a Angular que actualice el DOM de inmediato
-      this.cd.detectChanges();
-    }
+  cargarEstrenos(): void {
+    this.cargando.set(true);
+    this.peliculasService.getProximosEstrenos().then(result => {
+      this.peliculasProximas.set(result.data || []);
+      this.cargando.set(false);
+    });
   }
 
   activarAlerta(titulo: string): void {
-    alert(`¡Alerta activada para "${titulo}"! Te avisaremos cuando abra la preventa.`);
+    alert(`${titulo} - Te avisaremos cuando abra la preventa -`);
   }
 }

@@ -1,5 +1,5 @@
 /*================================
-  =      Conexion a la DB        =
+  =      Acceso a la DB          =
   ================================
 */
 export const environment = {

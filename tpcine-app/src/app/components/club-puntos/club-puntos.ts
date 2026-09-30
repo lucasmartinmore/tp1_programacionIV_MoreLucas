@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 
 @Component({
-  imports: [],
   selector: 'app-club-puntos',
+  standalone: true,
+  imports: [],
   styleUrl: './club-puntos.css',
   templateUrl: './club-puntos.html',
 })

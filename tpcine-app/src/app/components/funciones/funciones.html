@@ -1,0 +1,32 @@
+<div class="funciones-contenedor">
+  @if (cargando()) {
+    <p class="cargando">Cargando horarios...</p>
+  } @else if (!pelicula()) {
+    <p class="cargando">No se encontró la película.</p>
+  } @else {
+    <div class="encabezado-funciones">
+      <img
+        [src]="pelicula()!.imagen_url || 'https://via.placeholder.com/200x300'"
+        [alt]="pelicula()!.titulo_de_pelicula"
+        class="poster-chico">
+      <div>
+        <h2>{{ pelicula()!.titulo_de_pelicula }}</h2>
+        <p class="subtitulo">Elegí un horario</p>
+      </div>
+    </div>
+
+    @if (funciones().length === 0) {
+      <p class="cargando">No hay funciones programadas para esta película todavía.</p>
+    } @else {
+      <div class="lista-chips">
+        @for (f of funciones(); track f.id_funcion) {
+          <button class="chip-horario" (click)="elegirFuncion(f.id_funcion)">
+            <span class="chip-hora">{{ formatearHora(f.fecha_hora_inicio) }}</span>
+            <span class="chip-detalle">{{ f.formato_funcion }} · {{ f.idioma_funcion }}</span>
+            <span class="chip-precio">${{ f.precio_base }}</span>
+          </button>
+        }
+      </div>
+    }
+  }
+</div>

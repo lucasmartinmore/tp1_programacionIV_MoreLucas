@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Navbar } from './components/navbar/navbar';
 
@@ -10,5 +10,5 @@ import { Navbar } from './components/navbar/navbar';
   styleUrl: './app.css'
 })
 export class App {
-  title = 'Cinemore-app';
+  protected readonly title = signal('Cinemore-app');
 }
