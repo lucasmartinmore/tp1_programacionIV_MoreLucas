@@ -1,0 +1,39 @@
+<h2>Reporte de ventas</h2>
+
+<div class="filtros">
+  <label>Desde <input #desde type="date" [value]="desde"></label>
+  <label>Hasta <input #hasta type="date" [value]="hasta"></label>
+  <button (click)="generar(desde.value, hasta.value)">GENERAR</button>
+</div>
+
+@if (mensaje()) {
+  <p class="error">{{ mensaje() }}</p>
+}
+
+<div class="resumen">
+  <div class="tarjeta">
+    <span>Entradas vendidas</span>
+    <strong>{{ totalEntradas() }}</strong>
+  </div>
+  <div class="tarjeta">
+    <span>Facturación total</span>
+    <strong>{{ totalFacturado() | currency:'ARS':'symbol-narrow':'1.0-0' }}</strong>
+  </div>
+</div>
+
+<table>
+  <thead>
+    <tr><th>Día</th><th>Entradas</th><th>Facturado</th></tr>
+  </thead>
+  <tbody>
+    @for (f of filas(); track f.dia) {
+      <tr>
+        <td>{{ f.dia }}</td>
+        <td>{{ f.entradas }}</td>
+        <td>{{ f.facturado | currency:'ARS':'symbol-narrow':'1.0-0' }}</td>
+      </tr>
+    } @empty {
+      <tr><td colspan="3">No hay ventas en ese período.</td></tr>
+    }
+  </tbody>
+</table>

@@ -3,8 +3,6 @@ export interface Butaca {
   fila: string;
   columna: number;
   tipo: string;
-  ocupada: boolean;
-  seleccionada: boolean;
 }
 
 export interface FilaSala {

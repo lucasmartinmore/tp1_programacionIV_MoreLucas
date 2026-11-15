@@ -1,0 +1,53 @@
+<div class="barra-superior">
+  <h3>Películas</h3>
+  <button class="btn-principal" (click)="nueva()">+ NUEVA PELÍCULA</button>
+</div>
+
+@if (errorMensaje()) {
+  <p class="error">{{ errorMensaje() }}</p>
+}
+
+@if (cargando()) {
+  <p>Cargando películas...</p>
+} @else {
+  <div class="tabla-scroll">
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Póster</th>
+          <th>Título</th>
+          <th>Duración</th>
+          <th>Edad</th>
+          <th>Estreno</th>
+          <th>Cartelera</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (peli of peliculas(); track peli.id_pelicula) {
+          <tr>
+            <td><img class="mini-poster" [src]="peli.imagen_url" [alt]="peli.titulo_de_pelicula" /></td>
+            <td>{{ peli.titulo_de_pelicula }}</td>
+            <td>{{ peli.duracion_minutos | duracion }}</td>
+            <td>{{ peli.restriccion_de_edad === 0 ? 'ATP' : '+' + peli.restriccion_de_edad }}</td>
+            <td>{{ peli.fecha_estreno || '-' }}</td>
+            <td>
+              <span class="etiqueta" [class.si]="peli.esta_en_cartelera">
+                {{ peli.esta_en_cartelera ? 'SÍ' : 'NO' }}
+              </span>
+            </td>
+            <td class="acciones">
+              <button class="btn-chico" (click)="editar(peli.id_pelicula)">EDITAR</button>
+              <button class="btn-chico" (click)="cambiarCartelera(peli)">
+                {{ peli.esta_en_cartelera ? 'OCULTAR' : 'MOSTRAR' }}
+              </button>
+              <button class="btn-chico peligro" (click)="eliminar(peli)">BORRAR</button>
+            </td>
+          </tr>
+        } @empty {
+          <tr><td colspan="7">Todavía no hay películas cargadas.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

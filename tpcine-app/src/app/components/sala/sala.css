@@ -49,6 +49,15 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  width: 100%;          /* todas las filas miden lo mismo */
+}
+
+.butacas-fila {
+  display: flex;
+  align-items: center;
+  justify-content: center;   /* centra las butacas entre las dos letras */
+  gap: 5px;
+  flex: 1;                   /* ocupa todo el espacio entre las letras */
 }
 
 .letra-fila {
@@ -59,66 +68,9 @@
   font-size: 0.85rem;
 }
 
-.butacas-fila {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
 /* PASILLO ANCHO (separación visible entre bloques 4 - 20 - 4) */
-.asiento.pasillo-derecho {
-  margin-right: 28px; /* Espacio generoso para el pasillo peatonal */
-}
-
-/* BUTACAS BASE */
-.asiento {
-  width: 18px;
-  height: 18px;
-  border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  cursor: pointer;
-  padding: 0;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.asiento:hover:not(:disabled) {
-  transform: scale(1.3);
-  z-index: 5;
-}
-
-/* 1. Estándar: azul acero visible con contraste sobre el fondo */
-.asiento.estandar {
-  background-color: #334e68;
-  border-color: #486581;
-}
-
-/* 2. Accesible (Filas J-K): celeste vibrante */
-.asiento.accesible {
-  background-color: #06b6d4;
-  border-color: #67e8f9;
-}
-
-/* 3. VIP (Filas R-S-T): violeta brillante */
-.asiento.vip {
-  background-color: #a855f7;
-  border-color: #d8b4fe;
-}
-
-/* 4. Ocupado / Vendido: apagado casi negro y deshabilitado */
-.asiento.ocupado {
-  background-color: #0b0f17 !important;
-  border-color: #1e293b !important;
-  cursor: not-allowed;
-  opacity: 0.35;
-  box-shadow: none !important;
-}
-
-/* 5. Tu Selección: dorado neón */
-.asiento.seleccionado {
-  background-color: #f7b218 !important;
-  border: 1.5px solid #ffffff !important;
-  box-shadow: 0 0 10px #f7b218;
-  transform: scale(1.15);
+app-asiento.pasillo-derecho {
+  margin-right: 28px;
 }
 
 /* LEYENDA */

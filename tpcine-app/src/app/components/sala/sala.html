@@ -14,19 +14,13 @@
 
           <div class="butacas-fila">
             @for (b of fila.butacas; track b.id_butaca) {
-              <button 
-                type="button"
-                class="asiento" 
-                [ngClass]="[
-                  b.tipo.toLowerCase(), 
-                  b.ocupada ? 'ocupado' : '', 
-                  b.seleccionada ? 'seleccionado' : '',
-                  (b.columna === 4 || b.columna === 24) ? 'pasillo-derecho' : ''
-                ]"
-                [disabled]="b.ocupada"
-                (click)="seleccionarButaca(b)"
-                [title]="'Fila ' + b.fila + ' - Asiento ' + b.columna">
-              </button>
+              <app-asiento
+                [butaca]="b"
+                [ocupada]="estaOcupada(b)"
+                [seleccionada]="estaElegida(b)"
+                [class.pasillo-derecho]="hayPasilloDespues(b)"
+                (butacaClickeada)="seleccionarButaca($event)">
+              </app-asiento>
             }
           </div>
 
@@ -38,7 +32,7 @@
     <!-- Leyenda -->
     <div class="leyenda">
       <div class="item-leyenda"><span class="muestra estandar"></span> Estándar</div>
-      <div class="item-leyenda"><span class="muestra accesible"></span> Accesible (J-K)</div>
+      <div class="item-leyenda"><span class="muestra accesible"></span> Accesible (J)</div>
       <div class="item-leyenda"><span class="muestra vip"></span> VIP (R-S-T)</div>
       <div class="item-leyenda"><span class="muestra ocupado"></span> Ocupada</div>
       <div class="item-leyenda"><span class="muestra seleccionado"></span> Tu Selección</div>
@@ -53,9 +47,11 @@
               <span class="chip-butaca">{{ b.fila }}{{ b.columna }}</span>
             }
           </p>
-          <h4>Total: ${{ precioTotal() }}</h4>
+          <h4>Total: {{ precioTotal() | currency:'ARS':'symbol-narrow':'1.0-0' }}</h4>
         </div>
-        <button class="btn-continuar" routerLink="/candy">CONTINUAR AL CANDY</button>
+        <button class="btn-continuar" (click)="continuar()" [disabled]="butacasElegidas().length === 0">
+        CONTINUAR
+        </button>
       </div>
     }
   }

@@ -1,0 +1,29 @@
+<h2>Recompensas del club</h2>
+<p class="ayuda">Acá definís cuántos puntos cuesta cada recompensa. 1 punto = 1 peso gastado.</p>
+
+@for (r of recompensas(); track r.id) {
+  <div class="fila">
+    <div class="info">
+      <strong>{{ r.nombre }}</strong>
+      <span>{{ r.tipo === 'ENTRADA' ? 'Entrada de cine' : 'Candy bar' }}</span>
+    </div>
+    <input #costo type="number" min="1" [value]="r.costo_puntos"> pts
+    <label><input #activo type="checkbox" [checked]="r.activo"> Activa</label>
+    <button (click)="guardar(r, costo.value, activo.checked)">GUARDAR</button>
+  </div>
+}
+
+<h3>Nueva recompensa</h3>
+<div class="fila">
+  <input #nombreNuevo type="text" placeholder="Nombre (ej: Combo pochoclo + bebida)">
+  <select #tipoNuevo>
+    <option value="CANDY">Candy bar</option>
+    <option value="ENTRADA">Entrada de cine</option>
+  </select>
+  <input #costoNuevo type="number" min="1" placeholder="Puntos">
+  <button (click)="crear(nombreNuevo.value, tipoNuevo.value, costoNuevo.value)">CREAR</button>
+</div>
+
+@if (mensaje()) {
+  <p class="mensaje">{{ mensaje() }}</p>
+}

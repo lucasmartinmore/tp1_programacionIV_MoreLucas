@@ -1,0 +1,19 @@
+<h2>Cupones de descuento</h2>
+<p class="ayuda">Se aplican solos en el checkout. Si a un cliente le corresponden dos, se usa el de mayor porcentaje.</p>
+
+@for (c of cupones(); track c.codigo) {
+  <div class="fila">
+    <div class="info">
+      <strong>{{ c.codigo }}</strong>
+      <span>{{ c.descripcion }}</span>
+    </div>
+    <!-- #pct y #act son variables de plantilla: apuntan al input de esta fila -->
+    <input #pct type="number" min="0" max="100" [value]="c.porcentaje"> %
+    <label><input #act type="checkbox" [checked]="c.activo"> Activo</label>
+    <button (click)="guardar(c, pct.value, act.checked)">GUARDAR</button>
+  </div>
+}
+
+@if (mensaje()) {
+  <p class="mensaje">{{ mensaje() }}</p>
+}

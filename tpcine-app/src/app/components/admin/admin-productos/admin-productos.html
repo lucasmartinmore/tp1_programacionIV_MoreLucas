@@ -1,0 +1,42 @@
+<div class="barra-superior">
+  <h3>Productos de la candy bar</h3>
+  <button class="btn-principal" (click)="nuevo()">+ NUEVO PRODUCTO</button>
+</div>
+
+@if (errorMensaje()) {
+  <p class="error">{{ errorMensaje() }}</p>
+}
+
+@if (cargando()) {
+  <p>Cargando productos...</p>
+} @else {
+  <div class="tabla-scroll">
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Imagen</th>
+          <th>Nombre</th>
+          <th>Categoría</th>
+          <th>Precio</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (prod of productos(); track prod.id_producto) {
+          <tr>
+            <td><img class="mini-img" [src]="prod.imagen_url" [alt]="prod.nombre_producto" /></td>
+            <td>{{ prod.nombre_producto }}</td>
+            <td><span class="etiqueta">{{ prod.categoria_producto }}</span></td>
+            <td>{{ prod.precio_producto | currency:'ARS':'symbol-narrow':'1.0-0' }}</td>
+            <td class="acciones">
+              <button class="btn-chico" (click)="editar(prod.id_producto)">EDITAR</button>
+              <button class="btn-chico peligro" (click)="eliminar(prod)">BORRAR</button>
+            </td>
+          </tr>
+        } @empty {
+          <tr><td colspan="5">Todavía no hay productos cargados.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

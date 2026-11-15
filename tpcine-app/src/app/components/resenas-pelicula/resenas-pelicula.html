@@ -1,0 +1,42 @@
+<section class="resenas">
+  <h3>Reseñas</h3>
+
+  <div class="promedio">
+    @if (resenas().length > 0) {
+      <span class="estrellas">{{ estrellas(promedio()) }}</span>
+      <strong>{{ promedio() }}</strong> / 5 ({{ resenas().length }} reseñas)
+    } @else {
+      <span>Todavía no hay reseñas.</span>
+    }
+  </div>
+
+  @if (hayUsuario()) {
+    <div class="nueva">
+      <div class="selector">
+        @for (n of [1, 2, 3, 4, 5]; track n) {
+          <button type="button" class="estrella" [class.llena]="n <= estrellasElegidas()" (click)="elegir(n)">★</button>
+        }
+      </div>
+      <textarea #comentario rows="2" placeholder="Contanos qué te pareció (opcional)"></textarea>
+      <button class="btn-enviar" (click)="enviar(comentario.value, comentario)">PUBLICAR RESEÑA</button>
+      @if (mensaje()) {
+        <p class="mensaje">{{ mensaje() }}</p>
+      }
+    </div>
+  } @else {
+    <p class="aviso"><a routerLink="/login">Iniciá sesión</a> para dejar tu reseña.</p>
+  }
+
+  @for (r of resenas(); track r.id) {
+    <div class="resena">
+      <div class="cabecera">
+        <strong>{{ r.nombre_autor }}</strong>
+        <span class="estrellas">{{ estrellas(r.estrellas) }}</span>
+        <small>{{ r.creado | date:'dd/MM/yyyy' }}</small>
+      </div>
+      @if (r.comentario) {
+        <p>{{ r.comentario }}</p>
+      }
+    </div>
+  }
+</section>

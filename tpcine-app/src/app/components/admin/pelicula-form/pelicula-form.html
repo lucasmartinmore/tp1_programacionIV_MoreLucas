@@ -1,0 +1,85 @@
+<form class="form-admin" (submit)="onSubmit($event)">
+  <h3>{{ modoEdicion() ? 'Editar película' : 'Nueva película' }}</h3>
+
+  <div class="grid-campos">
+
+    <div class="campo ancho-completo">
+      <label>Título</label>
+      <input type="text" [formField]="peliculaForm.titulo_de_pelicula" />
+      @if (mostrarErrores() && peliculaForm.titulo_de_pelicula().invalid()) {
+        <span class="error">El título es obligatorio.</span>
+      }
+    </div>
+
+    <div class="campo ancho-completo">
+      <label>Sinopsis</label>
+      <textarea rows="4" [formField]="peliculaForm.sinopsis_de_pelicula"></textarea>
+      @if (mostrarErrores() && peliculaForm.sinopsis_de_pelicula().invalid()) {
+        <span class="error">La sinopsis es obligatoria.</span>
+      }
+    </div>
+
+        <div class="campo ancho-completo">
+      <label>Géneros</label>
+      <div class="generos">
+        @for (g of generos(); track g.id_genero) {
+          <label class="chip-genero">
+            <input type="checkbox"
+                   [checked]="generosElegidos().includes(g.id_genero)"
+                   (change)="alternarGenero(g.id_genero)">
+            {{ g.nombre }}
+          </label>
+        }
+      </div>
+    </div>
+
+    <div class="campo">
+      <label>Duración (minutos)</label>
+      <input type="number" [formField]="peliculaForm.duracion_minutos" />
+      @if (mostrarErrores() && peliculaForm.duracion_minutos().invalid()) {
+        <span class="error">La duración debe ser mayor a 0.</span>
+      }
+    </div>
+
+    <div class="campo">
+      <label>Restricción de edad</label>
+      <select [formField]="peliculaForm.restriccion_de_edad">
+        <option value="0">ATP (sin restricción)</option>
+        <option value="13">+13</option>
+        <option value="18">+18</option>
+      </select>
+    </div>
+
+    <div class="campo ancho-completo">
+      <label>URL de la imagen (póster)</label>
+      <input type="text" [formField]="peliculaForm.imagen_url" placeholder="https://..." />
+      @if (mostrarErrores() && peliculaForm.imagen_url().invalid()) {
+        <span class="error">La imagen es obligatoria.</span>
+      }
+    </div>
+
+    <div class="campo">
+      <label>Fecha de estreno</label>
+      <input type="date" [formField]="peliculaForm.fecha_estreno" />
+    </div>
+
+    <div class="campo campo-check">
+      <label>
+        <input type="checkbox" [formField]="peliculaForm.esta_en_cartelera" />
+        Mostrar en cartelera
+      </label>
+    </div>
+
+  </div>
+
+  @if (errorMensaje()) {
+    <p class="error">{{ errorMensaje() }}</p>
+  }
+
+  <div class="botones">
+    <button type="submit" class="btn-guardar" [disabled]="enviando()">
+      {{ enviando() ? 'GUARDANDO...' : 'GUARDAR' }}
+    </button>
+    <a class="btn-cancelar" routerLink="/admin/peliculas">CANCELAR</a>
+  </div>
+</form>

@@ -1,0 +1,150 @@
+<h3>Programar funciones</h3>
+
+@if (cargando()) {
+  <p>Cargando...</p>
+} @else {
+
+  <form class="form-admin" (submit)="programar($event)">
+    <div class="grid-campos">
+
+      <div class="campo ancho-completo">
+        <label>Película</label>
+        <select (change)="peliculaElegida.set(valorDe($event))">
+          <option value="">Elegí una película...</option>
+          @for (p of peliculas(); track p.id_pelicula) {
+            <option [value]="p.id_pelicula">{{ p.titulo_de_pelicula }} ({{ p.duracion_minutos }} min)</option>
+          }
+        </select>
+      </div>
+
+      <div class="campo ancho-completo">
+        <label>Días de la semana</label>
+        <div class="chips-dias">
+          @for (d of dias; track d.numero) {
+            <button
+              type="button"
+              class="chip-dia"
+              [class.activo]="diasElegidos().includes(d.numero)"
+              [title]="d.nombre"
+              (click)="alternarDia(d.numero)">
+              {{ d.letra }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="campo">
+        <label>Hora de inicio</label>
+        <select (change)="hora.set(valorDe($event))">
+          @for (h of horas; track h) {
+            <option [value]="h" [selected]="h === hora()">{{ h }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="campo">
+        <label>Desde el día</label>
+        <input type="date" [value]="fechaDesde()" (change)="fechaDesde.set(valorDe($event))" />
+      </div>
+
+      <div class="campo">
+        <label>Durante cuántas semanas</label>
+        <select (change)="semanas.set(+valorDe($event))">
+          <option value="1">1 semana</option>
+          <option value="2">2 semanas</option>
+          <option value="3">3 semanas</option>
+          <option value="4">4 semanas</option>
+          <option value="8">8 semanas</option>
+        </select>
+      </div>
+
+      <div class="campo">
+        <label>Precio base ($)</label>
+        <input type="number" [value]="precio()" (input)="precio.set(+valorDe($event))" />
+      </div>
+
+      <div class="campo">
+        <label>Formato</label>
+        <select (change)="formato.set(valorDe($event))">
+          <option value="2D">2D</option>
+          <option value="3D">3D</option>
+          <option value="4D">4D</option>
+          <option value="5D">5D</option>
+        </select>
+      </div>
+
+      <div class="campo">
+        <label>Idioma</label>
+        <select (change)="idioma.set(valorDe($event))">
+          <option value="Castellano">Castellano</option>
+          <option value="Subtitulada">Subtitulada</option>
+        </select>
+      </div>
+
+    </div>
+
+    @if (errorMensaje()) {
+      <p class="error">{{ errorMensaje() }}</p>
+    }
+
+    <button type="submit" class="btn-guardar" [disabled]="enviando()">
+      {{ enviando() ? 'PROGRAMANDO...' : 'PROGRAMAR FUNCIONES' }}
+    </button>
+  </form>
+
+  <!-- Resultado de la asignación automática: una línea por fecha -->
+  @if (resultado().length > 0) {
+    <div class="resultado">
+      <h4>Resultado</h4>
+      <ul>
+        @for (linea of resultado(); track $index) {
+          <li>{{ linea }}</li>
+        }
+      </ul>
+    </div>
+  }
+
+  <!-- Funciones ya programadas -->
+  <div class="barra-lista">
+    <h3>Próximas funciones</h3>
+    <select class="filtro" (change)="filtroPelicula.set(valorDe($event))">
+      <option value="">Todas las películas</option>
+      @for (p of peliculas(); track p.id_pelicula) {
+        <option [value]="p.id_pelicula">{{ p.titulo_de_pelicula }}</option>
+      }
+    </select>
+  </div>
+
+  <div class="tabla-scroll">
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Película</th>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Sala</th>
+          <th>Formato</th>
+          <th>Idioma</th>
+          <th>Precio</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (f of funcionesFiltradas(); track f.id_funcion) {
+          <tr>
+            <td>{{ f.peliculas?.titulo_de_pelicula }}</td>
+            <td>{{ f.fecha_hora_inicio | date:'dd/MM/yyyy' }}</td>
+            <td>{{ f.fecha_hora_inicio | date:'HH:mm' }}</td>
+            <td>{{ f.salas?.nombre_de_sala }}</td>
+            <td>{{ f.formato_funcion }}</td>
+            <td>{{ f.idioma_funcion }}</td>
+            <td>{{ f.precio_base | currency:'ARS':'symbol-narrow':'1.0-0' }}</td>
+            <td><button class="btn-chico peligro" (click)="eliminar(f)">BORRAR</button></td>
+          </tr>
+        } @empty {
+          <tr><td colspan="8">No hay funciones próximas.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

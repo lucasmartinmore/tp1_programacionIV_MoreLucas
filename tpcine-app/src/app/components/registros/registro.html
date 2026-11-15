@@ -1,0 +1,93 @@
+<div class="auth-contenedor">
+  <form class="auth-form auth-form-ancho" (submit)="onSubmit($event)">
+    <h2>Crear cuenta</h2>
+
+    <div class="grid-campos">
+
+      <div class="campo">
+        <label>Email</label>
+        <input type="email" [formField]="registroForm.email" placeholder="tu@email.com" />
+        @if (mostrarErrores() && registroForm.email().invalid()) {
+          <span class="error">Ingresá un email válido.</span>
+        }
+      </div>
+
+      <div class="campo">
+        <label>Contraseña</label>
+        <input type="password" [formField]="registroForm.password" placeholder="Mínimo 6 caracteres" />
+        @if (mostrarErrores() && registroForm.password().invalid()) {
+          <span class="error">La contraseña debe tener al menos 6 caracteres.</span>
+        }
+      </div>
+
+      <div class="campo">
+        <label>Nombre</label>
+        <input type="text" [formField]="registroForm.nombre_usuario" />
+        @if (mostrarErrores() && registroForm.nombre_usuario().invalid()) {
+          <span class="error">El nombre es obligatorio.</span>
+        }
+      </div>
+
+      <div class="campo">
+        <label>Apellido</label>
+        <input type="text" [formField]="registroForm.apellido_usuario" />
+        @if (mostrarErrores() && registroForm.apellido_usuario().invalid()) {
+          <span class="error">El apellido es obligatorio.</span>
+        }
+      </div>
+
+      <div class="campo">
+        <label>Fecha de nacimiento</label>
+        <input type="date" [formField]="registroForm.fecha_de_nacimiento" />
+        @if (mostrarErrores() && registroForm.fecha_de_nacimiento().invalid()) {
+          <span class="error">La fecha de nacimiento es obligatoria.</span>
+        }
+      </div>
+
+      <div class="campo">
+        <label>Tipo de sangre</label>
+        <select [formField]="registroForm.tipo_de_sangre">
+          <option value="">Seleccioná...</option>
+          <option value="A+">A+</option>
+          <option value="A-">A-</option>
+          <option value="B+">B+</option>
+          <option value="B-">B-</option>
+          <option value="AB+">AB+</option>
+          <option value="AB-">AB-</option>
+          <option value="O+">O+</option>
+          <option value="O-">O-</option>
+        </select>
+        @if (mostrarErrores() && registroForm.tipo_de_sangre().invalid()) {
+          <span class="error">Seleccioná un tipo de sangre.</span>
+        }
+      </div>
+
+      <div class="campo">
+        <label>Color de ojos</label>
+        <input type="text" [formField]="registroForm.color_de_ojos" placeholder="Ej: Marrones" />
+        @if (mostrarErrores() && registroForm.color_de_ojos().invalid()) {
+          <span class="error">El color de ojos es obligatorio.</span>
+        }
+      </div>
+
+      <div class="campo">
+        <label>Días de vacaciones por año</label>
+        <input type="number" [formField]="registroForm.dias_de_vacaciones" />
+        @if (mostrarErrores() && registroForm.dias_de_vacaciones().invalid()) {
+          <span class="error">Ingresá un número válido (0 o más).</span>
+        }
+      </div>
+
+    </div>
+
+    @if (errorMensaje()) {
+      <p class="error">{{ errorMensaje() }}</p>
+    }
+
+    <button type="submit" class="btn-continuar" [disabled]="enviando()">
+      {{ enviando() ? 'CREANDO CUENTA...' : 'REGISTRARME' }}
+    </button>
+
+    <p class="link-alterno">¿Ya tenés cuenta? <a routerLink="/login">Ingresá acá</a></p>
+  </form>
+</div>

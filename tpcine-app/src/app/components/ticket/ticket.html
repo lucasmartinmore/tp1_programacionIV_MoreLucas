@@ -1,0 +1,51 @@
+<div class="ticket-contenedor">
+  @if (carrito.ultimaCompra(); as compra) {
+    <h2>¡Compra realizada!</h2>
+    <p class="pelicula">{{ compra.pelicula }}</p>
+    <p>{{ compra.sala }} · {{ compra.fecha | date:'dd/MM/yyyy HH:mm' }}</p>
+
+    @for (e of compra.entradas; track e.qr) {
+      <div class="ticket">
+        <div class="ticket-datos">
+          <strong>Butaca {{ e.butaca }} @if (e.tipo === 'VIP') { ⭐ VIP }</strong>
+          <span>{{ e.precio | currency:'ARS':'symbol-narrow':'1.0-0' }}</span>
+        </div>
+
+        <!-- El QR aparece cuando termina de generarse -->
+        @if (qrs()[e.qr]) {
+          <img class="qr" [src]="qrs()[e.qr]" alt="QR de la entrada">
+        }
+        <code class="codigo">{{ e.qr }}</code>
+      </div>
+    }
+
+    @if (compra.candys.length > 0) {
+      <div class="ticket">
+        <strong>Candy bar (retirar en el mostrador)</strong>
+        @for (c of compra.candys; track c.id_producto) {
+          <div>{{ c.nombre }} x{{ c.cantidad }}</div>
+        }
+        @if (qrCandy()) {
+          <img class="qr" [src]="qrCandy()" alt="QR de la candy">
+        }
+      </div>
+    }
+
+    @if (compra.nota) {
+      <p class="nota">{{ compra.nota }}</p>
+    }
+    @if (compra.cupon) {
+      <p>Cupón aplicado: {{ compra.cupon }}</p>
+    }
+
+    <p class="total">Total pagado: {{ compra.total | currency:'ARS':'symbol-narrow':'1.0-0' }}</p>
+
+    <button class="btn-volver" (click)="descargarPdf()" [disabled]="generandoPdf()">
+      {{ generandoPdf() ? 'GENERANDO...' : 'DESCARGAR PDF' }}
+    </button>
+    <a class="btn-volver" routerLink="/peliculas">VOLVER A LA CARTELERA</a>
+  } @else {
+    <p>No hay ninguna compra reciente.</p>
+    <a class="btn-volver" routerLink="/peliculas">VER CARTELERA</a>
+  }
+</div>

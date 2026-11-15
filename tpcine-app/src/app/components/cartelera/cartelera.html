@@ -1,27 +1,76 @@
+<!-- Franja "Top 3" aparte, como el cartel de un cine. Solo se muestra si hay ventas -->
+@if (top3().length > 0) {
+  <section class="top3">
+    <h2 class="top3-titulo"> TOP 3 MÁS VENDIDAS</h2>
+
+    <div class="top3-lista">
+      <!-- $index es la posición (0, 1, 2): le sumo 1 para mostrar 1, 2, 3 -->
+      @for (peli of top3(); track peli.id_pelicula; let i = $index) {
+        <div class="top3-card" [appHoverZoom]="1.04" (click)="seleccionarPelicula(peli.id_pelicula)">
+          <span class="top3-puesto">{{ i + 1 }}</span>
+          <img [src]="peli.imagen_url || 'https://via.placeholder.com/300x450'" [alt]="peli.titulo_de_pelicula" class="top3-poster">
+          <h3 class="top3-nombre">{{ peli.titulo_de_pelicula }}</h3>
+        </div>
+      }
+    </div>
+  </section>
+}
+
 <div class="cartelera-contenedor">
-  <h2> Cartelera </h2>
+
+  <!-- CAMBIÓ: el título y el buscador ahora comparten fila -->
+  <div class="cabecera-cartelera">
+    <h2> Cartelera </h2>
+
+    <!-- Buscador: filtra las películas por título mientras se escribe -->
+    <input
+      type="text"
+      class="buscador"
+      placeholder="Buscar película..."
+      (input)="buscar($event)" />
+  </div>
 
   @if (cargando()) {
     <p>Cargando peliculas...</p>
   } @else if (peliculas().length === 0) {
     <p>No hay peliculas en cartelera disponible...</p>
   } @else {
+
+    <!--botones para filtrar por género -->
+    <div class="generos">
+      <button class="chip" [class.activo]="generoElegido() === ''" (click)="elegirGenero('')">TODOS</button>
+      @for (g of generosDisponibles(); track g) {
+        <button class="chip" [class.activo]="generoElegido() === g" (click)="elegirGenero(g)">{{ g }}</button>
+      }
+    </div>
+
     <div class="grid-peliculas">
-      @for (peli of peliculas(); track peli.id_pelicula) {
-        <div class="card-pelicula">
+      <!-- usa peliculasFiltradas() (la cartelera completa, filtrada solo por el género elegido) -->
+      @for (peli of peliculasFiltradas() | filtro: busqueda(); track peli.id_pelicula) {
+        <div class="card-pelicula" [appHoverZoom]="1.03">
           <div class="poster-contenedor">
             <img [src]="peli.imagen_url || 'https://via.placeholder.com/300x450'" [alt]="peli.titulo_de_pelicula" class="poster">
           </div>
 
           <div class="card-info">
             <h3 class="card-titulo">{{ peli.titulo_de_pelicula }}</h3>
-            
+
             <p class="detalle-texto">
-              <strong>Duración:</strong> {{ peli.duracion_minutos }} min
+              <strong>Duración:</strong> {{ peli.duracion_minutos | duracion }}
             </p>
             <p class="detalle-texto">
               <strong>Clasificación:</strong> {{ peli.restriccion_de_edad === 0 ? 'ATP' : '+' + peli.restriccion_de_edad }}
             </p>
+
+            <!-- los géneros de la película, uno al lado del otro -->
+            @if (peli.peliculas_generos?.length) {
+              <p class="generos-tarjeta">
+                @for (pg of peli.peliculas_generos; track pg.generos.id_genero) {
+                  <span>{{ pg.generos.nombre }}</span>
+                }
+              </p>
+            }
+
             <p class="sinopsis">{{ peli.sinopsis_de_pelicula }}</p>
 
             <button class="btn-funciones" (click)="seleccionarPelicula(peli.id_pelicula)">
@@ -29,6 +78,8 @@
             </button>
           </div>
         </div>
+      } @empty {
+        <p>No se encontraron películas con ese nombre.</p>
       }
     </div>
   }

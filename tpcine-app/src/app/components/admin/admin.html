@@ -1,0 +1,16 @@
+<div class="admin-contenedor">
+  <h2>Panel de administración</h2>
+
+  <!-- Menú del panel. Cada sección nueva se suma acá. -->
+  <nav class="admin-menu">
+    <a routerLink="/admin/peliculas" routerLinkActive="activo">PELÍCULAS</a>
+    <a routerLink="/admin/funciones" routerLinkActive="activo">FUNCIONES</a>
+    <a routerLink="/admin/productos" routerLinkActive="activo">PRODUCTOS</a>
+    <a routerLink="/admin/cupones" routerLinkActive="activo">CUPONES</a>
+    <a routerLink="/admin/recompensas" routerLinkActive="activo">RECOMPENSAS</a>
+    <a routerLink="/admin/reportes" routerLinkActive="activo">REPORTES</a>
+  </nav>
+
+  <!-- Acá se muestra la pantalla hija según la ruta -->
+  <router-outlet />
+</div>

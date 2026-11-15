@@ -5,11 +5,12 @@ import { Funciones } from '../../services/funciones';
 import { Peliculas } from '../../services/peliculas';
 import { Funcion } from '../../models/funcion';
 import { Pelicula } from '../../models/pelicula';
+import { ResenasPelicula } from '../resenas-pelicula/resenas-pelicula';
 
 @Component({
   selector: 'app-funciones',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,ResenasPelicula],
   templateUrl: './funciones.html',
   styleUrl: './funciones.css'
 })

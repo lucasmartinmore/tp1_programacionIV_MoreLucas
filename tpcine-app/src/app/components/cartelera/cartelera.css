@@ -21,6 +21,21 @@ h2 {
   padding-left: 14px;
 }
 
+/* NUEVO: fila con el título a la izquierda y el buscador a la derecha */
+.cabecera-cartelera {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;      /* en pantallas angostas el buscador pasa abajo del título */
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+/* El h2 ya traía margin-bottom: acá lo anulo porque la fila se encarga del espacio */
+.cabecera-cartelera h2 {
+  margin-bottom: 0;
+}
+
 .grid-peliculas {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -117,4 +132,136 @@ h2 {
 .btn-funciones:hover {
   background-color: #c93b14;
   transform: translateY(-1px);
+}
+
+/* Buscador (CAMBIÓ: más chico y sin margen propio, porque ahora va en la fila del título) */
+.buscador {
+  width: 100%;
+  max-width: 260px;
+  background-color: #0e1621;
+  border: 1px solid var(--color-cyan-vintage);
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: var(--color-crema);
+  font-family: var(--fuente-texto);
+  font-size: 0.85rem;
+}
+
+.buscador:focus {
+  outline: none;
+  border-color: var(--color-amarillo);
+}
+
+/* La directiva appHoverZoom cambia el transform; esto lo hace suave */
+.card-pelicula {
+  transition: transform 0.2s ease;
+}
+
+/* Botones para filtrar por género (CAMBIÓ: sin margen arriba, la fila del título ya deja espacio) */
+.generos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 22px;
+}
+
+.chip {
+  background: transparent;
+  color: var(--color-crema);
+  border: 1px solid var(--color-cyan-vintage);
+  border-radius: 999px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-family: var(--fuente-retro);
+  font-size: 0.8rem;
+}
+
+.chip.activo {
+  background: var(--color-amarillo);
+  color: #241a15;
+  border-color: var(--color-amarillo);
+}
+
+/* Géneros dentro de cada tarjeta */
+.generos-tarjeta { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+.generos-tarjeta span {
+  font-size: 0.7rem;
+  border: 1px solid var(--color-amarillo);
+  color: var(--color-amarillo);
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+
+/*=======================================================================================================
+  =                                  NUEVO: FRANJA TOP 3                                                =
+  =======================================================================================================
+*/
+
+/* La franja está fuera de .cartelera-contenedor, así que le pongo el mismo ancho máximo y la centro */
+.top3 {
+  width: calc(100% - 40px);
+  max-width: 1160px;
+  margin: 30px auto 0;
+  /* fondo semitransparente (el último número es la opacidad: 0 = invisible, 1 = sólido) */
+  background-color: rgba(36, 26, 21, 0.05);
+  /* desenfoca un poco lo que hay detrás, para que las formas del fondo no molesten al leer */
+  backdrop-filter: blur(3px);
+  border: 2px dashed var(--color-amarillo);
+  border-radius: 12px;
+  padding: 20px 16px 26px;
+  text-align: center;
+}
+
+/* Anulo el borde izquierdo del h2 global para que el título quede centrado */
+.top3-titulo {
+  border-left: none;
+  padding-left: 0;
+  margin-bottom: 20px;
+  font-size: 1.6rem;
+}
+
+.top3-lista {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.top3-card {
+  position: relative;
+  width: 170px;
+  cursor: pointer;
+}
+
+.top3-poster {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid var(--color-amarillo);
+  display: block;
+}
+
+/* Número en la esquina: 1, 2, 3 */
+.top3-puesto {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-naranja);
+  color: #fff;
+  font-family: var(--fuente-retro);
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--color-amarillo);
+}
+
+.top3-nombre {
+  margin-top: 8px;
+  font-size: 0.95rem;
+  color: var(--color-crema);
 }

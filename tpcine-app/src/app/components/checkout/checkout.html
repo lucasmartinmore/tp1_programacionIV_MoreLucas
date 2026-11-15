@@ -1,0 +1,98 @@
+<div class="checkout-contenedor">
+  <h2>Tu carrito</h2>
+
+  @if (carrito.cantidadItems() === 0) {
+    <p class="vacio">Tu carrito está vacío.</p>
+    <a class="btn-volver" routerLink="/peliculas">VER CARTELERA</a>
+  } @else {
+
+    @if (funcion(); as f) {
+      <section class="bloque">
+        <h3>{{ f.peliculas.titulo_de_pelicula }}</h3>
+        <p>{{ f.salas.nombre_de_sala }} · {{ f.fecha_hora_inicio | date:'dd/MM/yyyy HH:mm' }} · {{ f.formato_funcion }} · {{ f.idioma_funcion }}</p>
+      </section>
+    }
+
+    <section class="bloque">
+      <h3>Entradas</h3>
+      @for (e of carrito.entradas(); track e.butaca_id) {
+        <div class="linea">
+          <span>Butaca {{ e.fila }}{{ e.columna }} ({{ e.tipo }})</span>
+          <span>{{ e.precio | currency:'ARS':'symbol-narrow':'1.0-0' }}</span>
+          <button class="btn-quitar" (click)="carrito.quitarEntrada(e.butaca_id)">✕</button>
+        </div>
+      }
+      @if (hayVip()) {
+        <p class="aviso">⭐ Tu selección incluye butacas VIP, que tienen un recargo sobre el precio base.</p>
+      }
+    </section>
+
+    <section class="bloque">
+      <h3>Candy bar</h3>
+      @for (c of carrito.candys(); track c.id_producto) {
+        <div class="linea">
+          <span>{{ c.nombre }} x{{ c.cantidad }}</span>
+          <span>{{ c.precio * c.cantidad | currency:'ARS':'symbol-narrow':'1.0-0' }}</span>
+          <button class="btn-quitar" (click)="carrito.quitarCandy(c.id_producto)">−</button>
+        </div>
+      } @empty {
+        <p class="vacio">No agregaste nada de la candy bar.</p>
+      }
+      <a class="btn-volver" routerLink="/candy">+ Agregar candy</a>
+    </section>
+
+    <div class="resumen">
+      <div>Subtotal: {{ carrito.total() | currency:'ARS':'symbol-narrow':'1.0-0' }}</div>
+       <div>Subtotal: {{ carrito.total() | currency:'ARS':'symbol-narrow':'1.0-0' }}</div>
+
+      @if (canjesEntrada().length > 0) {
+        <label class="canje-check">
+          <input type="checkbox" [checked]="usarCanje()" (change)="alternarCanje()">
+          Usar una entrada gratis canjeada ({{ canjesEntrada().length }} disponible/s)
+        </label>
+      }
+      @if (descuentoCanje() > 0) {
+        <div class="descuento">Entrada gratis: -{{ descuentoCanje() | currency:'ARS':'symbol-narrow':'1.0-0' }}</div>
+      }
+
+      @if (cupon(); as c) {
+        <div class="descuento">{{ c.descripcion }} (-{{ c.porcentaje }}%): -{{ descuentoCupon() | currency:'ARS':'symbol-narrow':'1.0-0' }}</div>
+      }
+      <div class="total">Total: {{ totalFinal() | currency:'ARS':'symbol-narrow':'1.0-0' }}</div>
+
+      @if (hayUsuario()) {
+        <div class="puntos-nuevos">Con esta compra sumás {{ totalFinal() }} puntos.</div>
+      }
+            @if (credito() > 0) {
+        <label class="canje-check">
+          <input type="checkbox" [checked]="usarCredito()" (change)="alternarCredito()">
+          Usar mi crédito ({{ credito() | currency:'ARS':'symbol-narrow':'1.0-0' }} disponibles)
+        </label>
+      }
+      @if (creditoAplicado() > 0) {
+        <div class="descuento">Crédito usado: -{{ creditoAplicado() | currency:'ARS':'symbol-narrow':'1.0-0' }}</div>
+      }
+      <div class="total">Total: {{ totalFinal() | currency:'ARS':'symbol-narrow':'1.0-0' }}</div>
+    </div>
+
+    @if (!hayUsuario()) {
+      <p class="aviso">Estás comprando sin cuenta. <a routerLink="/login">Iniciá sesión</a> para acceder a descuentos.</p>
+    }
+
+    @if (mensajeBloqueo()) {
+      <p class="error">{{ mensajeBloqueo() }}</p>
+      @if (!hayUsuario()) {
+        <a class="btn-volver" routerLink="/login">INICIAR SESIÓN</a>
+      }
+    }
+
+    @if (errorMensaje()) {
+      <p class="error">{{ errorMensaje() }}</p>
+    }
+
+    <button class="btn-pagar" (click)="pagar()"
+            [disabled]="enviando() || carrito.entradas().length === 0 || mensajeBloqueo() !== ''">
+      {{ enviando() ? 'PROCESANDO...' : 'PAGAR' }}
+    </button>
+  }
+</div>

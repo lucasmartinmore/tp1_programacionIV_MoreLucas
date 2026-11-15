@@ -1,0 +1,77 @@
+.ticket-contenedor {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 30px 16px;
+  text-align: center;
+}
+
+h2 {
+  font-family: var(--fuente-retro);
+  color: var(--color-amarillo);
+  margin-bottom: 20px;
+}
+
+/* El ticket con borde punteado, como un talón de cine */
+.ticket {
+  background-color: var(--color-card);
+  border: 2px dashed var(--color-amarillo);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 14px;
+  text-align: left;
+}
+
+.ticket-datos {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.codigo {
+  display: block;
+  word-break: break-all;
+  font-size: 0.75rem;
+  color: var(--color-crema);
+  opacity: 0.8;
+}
+
+.total {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: var(--color-amarillo);
+  margin: 18px 0;
+}
+
+.btn-volver {
+  display: inline-block;
+  background-color: var(--color-naranja);
+  color: #fff;
+  font-family: var(--fuente-retro);
+  border: 1px solid var(--color-amarillo);
+  border-radius: 6px;
+  padding: 12px 22px;
+  text-decoration: none;
+}
+
+.pelicula { font-size: 1.2rem; color: var(--color-crema); }
+.nota { color: var(--color-amarillo); margin: 10px 0; }
+
+.qr {
+  display: block;
+  width: 180px;
+  height: 180px;
+  margin: 10px auto;
+  background: #fff;       /* el QR necesita fondo claro para poder leerse */
+  padding: 6px;
+  border-radius: 6px;
+}
+
+button.btn-volver {
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+button.btn-volver:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

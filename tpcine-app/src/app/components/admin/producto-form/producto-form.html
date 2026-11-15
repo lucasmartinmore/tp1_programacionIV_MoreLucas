@@ -1,0 +1,61 @@
+<form class="form-admin" (submit)="onSubmit($event)">
+  <h3>{{ modoEdicion() ? 'Editar producto' : 'Nuevo producto' }}</h3>
+
+  <div class="grid-campos">
+
+    <div class="campo ancho-completo">
+      <label>Nombre</label>
+      <input type="text" [formField]="productoForm.nombre_producto" />
+      @if (mostrarErrores() && productoForm.nombre_producto().invalid()) {
+        <span class="error">El nombre es obligatorio.</span>
+      }
+    </div>
+
+    <div class="campo ancho-completo">
+      <label>Descripción</label>
+      <textarea rows="3" [formField]="productoForm.descripcion_producto"></textarea>
+    </div>
+
+    <div class="campo">
+      <label>Categoría</label>
+      <!-- "list" conecta el input con las sugerencias del datalist de abajo -->
+      <input type="text" list="lista-categorias" [formField]="productoForm.categoria_producto" placeholder="Ej: Pochoclos" />
+      <datalist id="lista-categorias">
+        @for (c of categorias(); track c) {
+          <option [value]="c"></option>
+        }
+      </datalist>
+      @if (mostrarErrores() && productoForm.categoria_producto().invalid()) {
+        <span class="error">La categoría es obligatoria.</span>
+      }
+    </div>
+
+    <div class="campo">
+      <label>Precio ($)</label>
+      <input type="number" [formField]="productoForm.precio_producto" />
+      @if (mostrarErrores() && productoForm.precio_producto().invalid()) {
+        <span class="error">El precio debe ser mayor a 0.</span>
+      }
+    </div>
+
+    <div class="campo ancho-completo">
+      <label>URL de la imagen</label>
+      <input type="text" [formField]="productoForm.imagen_url" placeholder="https://..." />
+      @if (mostrarErrores() && productoForm.imagen_url().invalid()) {
+        <span class="error">La imagen es obligatoria.</span>
+      }
+    </div>
+
+  </div>
+
+  @if (errorMensaje()) {
+    <p class="error">{{ errorMensaje() }}</p>
+  }
+
+  <div class="botones">
+    <button type="submit" class="btn-guardar" [disabled]="enviando()">
+      {{ enviando() ? 'GUARDANDO...' : 'GUARDAR' }}
+    </button>
+    <a class="btn-cancelar" routerLink="/admin/productos">CANCELAR</a>
+  </div>
+</form>

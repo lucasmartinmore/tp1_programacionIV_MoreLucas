@@ -28,5 +28,11 @@
         }
       </div>
     }
+
+    <!-- Reseñas de la película (estrellas y promedio), visibles antes de comprar.
+         Le paso el id de la película al componente hijo. -->
+    <app-resenas-pelicula [peliculaId]="pelicula()!.id_pelicula!" />
+
   }
+
 </div>

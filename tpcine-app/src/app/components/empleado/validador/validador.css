@@ -1,0 +1,46 @@
+.validador {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 30px 16px;
+  text-align: center;
+}
+
+h2 {
+  font-family: var(--fuente-retro);
+  color: var(--color-amarillo);
+  margin-bottom: 10px;
+}
+
+.ayuda { color: #94a3b8; margin-bottom: 18px; }
+
+input {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-cyan-vintage);
+  background: var(--color-card);
+  color: var(--color-crema);
+  margin-bottom: 12px;
+}
+
+button {
+  background: var(--color-naranja);
+  color: #fff;
+  font-family: var(--fuente-retro);
+  border: 1px solid var(--color-amarillo);
+  border-radius: 6px;
+  padding: 12px 24px;
+  cursor: pointer;
+}
+
+.resultado {
+  margin-top: 24px;
+  padding: 18px;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.ok { background: #14532d; color: #bbf7d0; }
+.error { background: #7f1d1d; color: #fecaca; }

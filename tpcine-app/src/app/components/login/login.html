@@ -1,0 +1,27 @@
+<div class="auth-contenedor">
+  <form class="auth-form" (submit)="onSubmit($event)">
+    <h2>Ingresar</h2>
+
+    <label>Email</label>
+    <input type="email" [formField]="loginForm.email" placeholder="tu@email.com" />
+    @if (mostrarErrores() && loginForm.email().invalid()) {
+      <span class="error">El email es obligatorio y debe ser válido.</span>
+    }
+
+    <label>Contraseña</label>
+    <input type="password" [formField]="loginForm.password" />
+    @if (mostrarErrores() && loginForm.password().invalid()) {
+      <span class="error">La contraseña es obligatoria.</span>
+    }
+
+    @if (errorMensaje()) {
+      <p class="error">{{ errorMensaje() }}</p>
+    }
+
+    <button type="submit" class="btn-continuar" [disabled]="enviando()">
+      {{ enviando() ? 'INGRESANDO...' : 'INGRESAR' }}
+    </button>
+
+    <p class="link-alterno">¿No tenés cuenta? <a routerLink="/registro">Registrate acá</a></p>
+  </form>
+</div>

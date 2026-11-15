@@ -1,28 +1,36 @@
-<nav class="navbar">
-  <!-- Logo principal -->
+<!-- [class.abierto] le agrega la clase "abierto" a la barra cuando el menú está desplegado -->
+<nav class="navbar" [class.abierto]="menuAbierto()">
   <div class="logo" routerLink="/peliculas">
     CINE<span>MORE</span>
   </div>
 
-  <!-- Enlaces de navegacion -->
-  <ul class="nav-links">
-    <li>
-      <a routerLink="/peliculas" routerLinkActive="active">PELÍCULAS</a>
-    </li>
-    <li>
-      <a routerLink="/candy" routerLinkActive="active">CANDY</a>
-    </li>
-    <li>
-      <a routerLink="/club-puntos" routerLinkActive="active">CLUB / PUNTOS</a>
-    </li>
-    <li>
-      <a routerLink="/proximamente" routerLinkActive="active">PRÓXIMAMENTE</a>
-    </li>
+  <!-- NUEVO: botón de hamburguesa, solo visible en pantallas chicas -->
+  <button class="btn-menu" (click)="alternarMenu()" aria-label="Abrir menú">
+    {{ menuAbierto() ? '✕' : '☰' }}
+  </button>
+
+  <!-- NUEVO: al tocar cualquier opción, el menú se vuelve a cerrar -->
+  <ul class="nav-links" (click)="menuAbierto.set(false)">
+    <li><a routerLink="/peliculas" routerLinkActive="active">PELÍCULAS</a></li>
+    <li><a routerLink="/candy" routerLinkActive="active">CANDY</a></li>
+    <li><a routerLink="/club-puntos" routerLinkActive="active">CLUB / PUNTOS</a></li>
+    <li><a routerLink="/proximamente" routerLinkActive="active">PRÓXIMAMENTE</a></li>
   </ul>
 
-  <!-- Botones de accesos -->
-  <div class="nav-acciones">
-    <button class="btn-login">INGRESAR</button>
-    <button class="btn-registro">REGISTRARSE</button>
+  <div class="nav-acciones" (click)="menuAbierto.set(false)">
+    <button class="btn-login" routerLink="/checkout" [disabled]="carrito.cantidadItems() === 0">
+      CARRITO ({{ carrito.cantidadItems() }})
+    </button>
+
+    @if (auth.emailUsuario()) {
+      <button class="btn-login" routerLink="/perfil">PERFIL</button>
+      <button *appPersonal class="btn-login" routerLink="/empleado">VALIDAR</button>
+      <button *appAdmin class="btn-login" routerLink="/admin">ADMIN</button>
+      <span class="texto-usuario">{{ auth.emailUsuario() }}</span>
+      <button class="btn-login" (click)="cerrarSesion()">SALIR</button>
+    } @else {
+      <button class="btn-login" routerLink="/login">INGRESAR</button>
+      <button class="btn-registro" routerLink="/registro">REGISTRARSE</button>
+    }
   </div>
 </nav>

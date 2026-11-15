@@ -1,0 +1,97 @@
+.checkout-contenedor {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 30px 16px;
+}
+
+h2 {
+  font-family: var(--fuente-retro);
+  color: var(--color-amarillo);
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.bloque {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-cyan-vintage);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 18px;
+}
+
+h3 {
+  color: var(--color-crema);
+  margin-bottom: 10px;
+}
+
+.linea {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px dashed rgba(253, 243, 220, 0.2);
+}
+
+.btn-quitar {
+  background: var(--color-rojo-vintage);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  width: 26px;
+  height: 26px;
+  cursor: pointer;
+}
+
+.total {
+  text-align: right;
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: var(--color-amarillo);
+  margin: 10px 0 18px;
+}
+
+.btn-pagar, .btn-volver {
+  display: inline-block;
+  background-color: var(--color-naranja);
+  color: #fff;
+  font-family: var(--fuente-retro);
+  border: 1px solid var(--color-amarillo);
+  border-radius: 6px;
+  padding: 12px 22px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-pagar {
+  width: 100%;
+}
+
+.btn-pagar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.vacio { color: #94a3b8; }
+.error { color: #ff7a7a; margin-bottom: 10px; }
+
+.resumen {
+  text-align: right;
+  margin: 10px 0 18px;
+}
+
+.resumen .total {
+  margin: 4px 0 0;
+}
+
+.descuento { color: #7be0a0; }
+
+.aviso {
+  color: var(--color-amarillo);
+  margin: 10px 0;
+}
+
+.aviso a { color: var(--color-naranja); }
+
+.canje-check { display: block; margin: 8px 0; color: var(--color-amarillo); }
+.puntos-nuevos { color: #72cbd8; font-size: 0.9rem; margin-top: 4px; }

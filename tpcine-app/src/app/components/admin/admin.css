@@ -1,0 +1,38 @@
+.admin-contenedor {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 30px 16px;
+}
+
+h2 {
+  font-family: var(--fuente-retro);
+  color: var(--color-amarillo);
+  margin-bottom: 18px;
+}
+
+.admin-menu {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+  border-bottom: 2px solid var(--color-amarillo);
+  padding-bottom: 12px;
+}
+
+.admin-menu a {
+  color: var(--color-crema);
+  text-decoration: none;
+  font-weight: bold;
+  padding: 8px 16px;
+  border-radius: 6px;
+  letter-spacing: 1px;
+}
+
+.admin-menu a:hover {
+  background-color: var(--color-card-hover);
+}
+
+.admin-menu a.activo {
+  background-color: var(--color-amarillo);
+  color: #241a15;
+}

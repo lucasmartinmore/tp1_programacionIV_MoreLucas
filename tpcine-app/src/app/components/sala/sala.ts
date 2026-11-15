@@ -1,39 +1,56 @@
-import { Component, OnInit, signal } from '@angular/core';
-import { CommonModule, NgClass } from '@angular/common';
-import { RouterLink, ActivatedRoute } from '@angular/router';
+import { CurrencyPipe } from '@angular/common';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
+import { Router, ActivatedRoute} from '@angular/router';
+import { Subscription } from 'rxjs';
+import { Asiento } from '../asiento/asiento';
 import { ButacasService } from '../../services/butacas';
 import { Butaca, FilaSala } from '../../models/butaca';
+import { Carrito } from '../../services/carrito';
+
+// Lo que se suma al precio de la función cuando la butaca es VIP (filas R, S y T)
+const RECARGO_VIP = 2500;
 
 @Component({
+  imports: [Asiento, CurrencyPipe],
   selector: 'app-sala',
-  standalone: true,
-  imports: [CommonModule, NgClass, RouterLink],
+  styleUrl: './sala.css',
   templateUrl: './sala.html',
-  styleUrl: './sala.css'
 })
-export class Sala implements OnInit {
+export class Sala implements OnInit, OnDestroy {
   filas = signal<FilaSala[]>([]);
+  idsOcupadas = signal<string[]>([]);
   butacasElegidas = signal<Butaca[]>([]);
   cargando = signal<boolean>(true);
+  precioBase = signal<number>(0);
   precioTotal = signal<number>(0);
+
+  private funcionId = '';
+  private suscripcion?: Subscription;
 
   constructor(
     private butacasService: ButacasService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private carrito: Carrito,
+    private router: Router
   ) {}
 
   ngOnInit() {
-    const funcionId = this.route.snapshot.params['id'];
-    if (funcionId) {
-      this.cargarDatos(funcionId);
+    this.funcionId = this.route.snapshot.params['id'];
+    if (this.funcionId) {
+      this.cargarSala();
     }
   }
 
-  async cargarDatos(funcionId: string) {
+  // Al salir de la pantalla cierro la suscripción al realtime (igual que cosas-realtime de la cátedra)
+  ngOnDestroy() {
+    this.suscripcion?.unsubscribe();
+  }
+
+  async cargarSala() {
     this.cargando.set(true);
 
-    // Busca la sala de la funcíon
-    const resultadoFuncion = await this.butacasService.getSalaDeLaFuncion(funcionId);
+    // 1. Datos de la función: de acá sale la sala y el precio base
+    const resultadoFuncion = await this.butacasService.getFuncionById(this.funcionId);
 
     if (resultadoFuncion.error || !resultadoFuncion.data) {
       console.error('No se encontró la función:', resultadoFuncion.error);
@@ -41,37 +58,24 @@ export class Sala implements OnInit {
       return;
     }
 
-    const salaId = resultadoFuncion.data['sala_id'];
+    const funcion = resultadoFuncion.data;
+    this.precioBase.set(funcion['precio_base']);
 
-    // Me traigo las butacas de esa sala y cuáles están ocupadas
-    const [resultadoButacas, resultadoOcupadas] = await Promise.all([
-      this.butacasService.getButacasDeLaSala(salaId),
-      this.butacasService.getButacasOcupadasDeLaFuncion(funcionId)
-    ]);
+    // 2. Las butacas físicas de esa sala
+    const resultadoButacas = await this.butacasService.getButacasDeLaSala(funcion['sala_id']);
 
-    const butacasCrudas = resultadoButacas.data || [];
-    const idsOcupadas = (resultadoOcupadas.data || []).map(e => e['butaca_id']);
-
-    // Transformo cada butaca de la tabla en el formato que
-    // necesita mi interfaz Butaca, calculando tipo y ocupada acá mismo.
-    const butacas: Butaca[] = butacasCrudas.map(b => ({
+    const butacas: Butaca[] = (resultadoButacas.data || []).map((b: any) => ({
       id_butaca: b['id_butaca'],
       fila: b['fila_de_butaca'].trim(),
       columna: b['columna_de_butaca'],
-      tipo: this.determinarTipoAsiento(b['fila_de_butaca'].trim()),
-      ocupada: idsOcupadas.includes(b['id_butaca']),
-      seleccionada: false
+      tipo: b['tipo_de_butaca'],
     }));
 
     this.armarFilas(butacas);
     this.cargando.set(false);
-  }
 
-  // J y K son accesibles, R/S/T son VIP, el resto es estándar.
-  determinarTipoAsiento(fila: string): string {
-    if (fila === 'J' || fila === 'K') return 'ACCESIBLE';
-    if (fila === 'R' || fila === 'S' || fila === 'T') return 'VIP';
-    return 'ESTANDAR';
+    // 3. Me suscribo para ver en vivo qué butacas se van ocupando
+    this.escucharOcupadas();
   }
 
   armarFilas(asientos: Butaca[]) {
@@ -86,28 +90,75 @@ export class Sala implements OnInit {
     this.filas.set(resultado);
   }
 
+  // Cada vez que alguien compra una butaca, el servicio emite la lista actualizada de ocupadas
+  escucharOcupadas() {
+    this.suscripcion = this.butacasService.getOcupadasRealtime(this.funcionId).subscribe({
+      next: (ids) => {
+        this.idsOcupadas.set(ids);
+
+        // Si otra persona me ganó una butaca que yo ya había elegido, se la saco a mi selección
+        const todaviaLibres = this.butacasElegidas().filter(b => !ids.includes(b.id_butaca));
+        this.butacasElegidas.set(todaviaLibres);
+        this.calcularPrecio();
+      },
+      error: (error) => console.error('Error de realtime:', error),
+    });
+  }
+
+  estaOcupada(butaca: Butaca): boolean {
+    return this.idsOcupadas().includes(butaca.id_butaca);
+  }
+
+  estaElegida(butaca: Butaca): boolean {
+    return this.butacasElegidas().some(b => b.id_butaca === butaca.id_butaca);
+  }
+
+  // Los pasillos: filas comunes 4-20-4 (después de la columna 4 y la 24),
+  // fila accesible 2-10-2 (después de la columna 2 y la 12)
+  hayPasilloDespues(butaca: Butaca): boolean {
+    if (butaca.tipo === 'ACCESIBLE') {
+      return butaca.columna === 2 || butaca.columna === 12;
+    }
+    return butaca.columna === 4 || butaca.columna === 24;
+  }
+
+  // Este método lo llama el hijo (Asiento) con (butacaClickeada)
   seleccionarButaca(butaca: Butaca) {
-    if (butaca.ocupada) return;
-    butaca.seleccionada = !butaca.seleccionada;
-    this.actualizarSeleccionadas();
+    if (this.estaOcupada(butaca)) return;
+
+    if (this.estaElegida(butaca)) {
+      this.butacasElegidas.set(this.butacasElegidas().filter(b => b.id_butaca !== butaca.id_butaca));
+    } else {
+      this.butacasElegidas.set([...this.butacasElegidas(), butaca]);
+    }
+
     this.calcularPrecio();
   }
 
-  actualizarSeleccionadas() {
-    const elegidas: Butaca[] = [];
-    for (const fila of this.filas()) {
-      for (const b of fila.butacas) {
-        if (b.seleccionada) elegidas.push(b);
-      }
-    }
-    this.butacasElegidas.set(elegidas);
+  // Precio de una butaca: el de la función, más el recargo si es VIP
+  precioDeButaca(butaca: Butaca): number {
+    return butaca.tipo === 'VIP' ? this.precioBase() + RECARGO_VIP : this.precioBase();
   }
 
   calcularPrecio() {
     let subtotal = 0;
     for (const b of this.butacasElegidas()) {
-      subtotal += b.tipo === 'VIP' ? 7500 : 5000;
+      subtotal += this.precioDeButaca(b);
     }
     this.precioTotal.set(subtotal);
+  }
+
+   // Guarda las butacas elegidas en el carrito y sigue a la candy bar
+  continuar() {
+    const items = this.butacasElegidas().map(b => ({
+      butaca_id: b.id_butaca,
+      fila: b.fila,
+      columna: b.columna,
+      tipo: b.tipo,
+      precio: this.precioDeButaca(b),
+    }));
+
+    this.carrito.guardarEntradas(this.funcionId, items);
+    this.router.navigate(['/candy']);
   }
 }

@@ -30,10 +30,99 @@
   padding: 0;
 }
 
-html, body {
+/* Degradé base: queda quieto detrás de las formas */
+html {
+  min-height: 100vh;
+  background: linear-gradient(160deg, #241a15 0%, #1b3a3d 55%, #3a1a14 100%) fixed;
+}
+
+/* body y app-root transparentes para que se vea el fondo animado */
+body,
+app-root {
+  background: transparent !important;
+}
+
+body {
   width: 100%;
   min-height: 100vh;
-  background-color: var(--color-fondo);
   color: var(--color-crema);
   font-family: var(--fuente-texto);
+}
+
+app-root {
+  display: block;
+  min-height: 100vh;
+}
+
+/*=======================================================================================================
+  =                          FONDO ANIMADO: FORMAS RETRO FLOTANDO                                       =
+  =======================================================================================================
+*/
+
+/* Contenedor fijo detrás de todo; no tapa el contenido ni los clicks */
+.fondo-formas {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Cada forma toma su posición, tamaño, color y tiempos de las variables que
+   tiene escritas en el style de index.html (--x, --y, --s, --c, --dx, --dy, --t, --g).
+   Usa dos animaciones a la vez: "flotar" (se desplaza) y "girar" (rota).
+   Se pueden combinar porque usan las propiedades independientes translate y rotate. */
+.forma {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--s);
+  height: var(--s);
+  background: var(--c);
+  opacity: 0.4;
+  animation:
+    flotar var(--t) ease-in-out infinite alternate,
+    girar var(--g) linear infinite;
+}
+
+/* Las formas se dibujan recortando el cuadrado con clip-path */
+.triangulo {
+  clip-path: polygon(50% 0, 0 100%, 100% 100%);
+}
+
+.circulo {
+  border-radius: 50%;
+}
+
+/* Círculo con rayas horizontales */
+.circulo-rayado {
+  border-radius: 50%;
+  background: repeating-linear-gradient(0deg, var(--c) 0 3px, transparent 3px 7px);
+}
+
+.rayo {
+  clip-path: polygon(60% 0, 15% 55%, 45% 55%, 30% 100%, 85% 40%, 55% 40%);
+}
+
+.zigzag {
+  height: calc(var(--s) / 2);
+  clip-path: polygon(
+    0 60%, 12% 0, 25% 60%, 37% 0, 50% 60%, 62% 0, 75% 60%, 87% 0, 100% 60%,
+    100% 100%, 87% 40%, 75% 100%, 62% 40%, 50% 100%, 37% 40%, 25% 100%, 12% 40%, 0 100%
+  );
+}
+
+@keyframes flotar {
+  from { translate: 0 0; }
+  to   { translate: var(--dx) var(--dy); }
+}
+
+@keyframes girar {
+  from { rotate: 0deg; }
+  to   { rotate: 360deg; }
+}
+
+/* Accesibilidad: si la persona pidió menos movimiento en su sistema, se frena */
+@media (prefers-reduced-motion: reduce) {
+  .forma { animation: none; }
 }

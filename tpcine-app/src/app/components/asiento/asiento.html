@@ -1,0 +1,12 @@
+<button
+  type="button"
+  class="asiento"
+  [ngClass]="[
+    butaca().tipo.toLowerCase(),
+    ocupada() ? 'ocupado' : '',
+    seleccionada() ? 'seleccionado' : ''
+  ]"
+  [disabled]="ocupada()"
+  (click)="elegir()"
+  [title]="'Fila ' + butaca().fila + ' - Asiento ' + butaca().columna">
+</button>

@@ -1,0 +1,55 @@
+.resenas {
+  max-width: 720px;
+  margin: 30px auto 0;
+  padding: 0 16px;
+}
+
+h3 { font-family: var(--fuente-retro); color: var(--color-amarillo); margin-bottom: 10px; }
+
+.promedio { margin-bottom: 14px; }
+.estrellas { color: var(--color-amarillo); letter-spacing: 2px; }
+
+.nueva {
+  background: var(--color-card);
+  border: 1px solid var(--color-cyan-vintage);
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 16px;
+}
+
+.estrella {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: #55606b;
+  cursor: pointer;
+}
+.estrella.llena { color: var(--color-amarillo); }
+
+textarea {
+  width: 100%;
+  margin: 8px 0;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid var(--color-cyan-vintage);
+  background: #0e1621;
+  color: var(--color-crema);
+}
+
+.btn-enviar {
+  background: var(--color-naranja);
+  color: #fff;
+  border: 1px solid var(--color-amarillo);
+  border-radius: 6px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-family: var(--fuente-retro);
+}
+
+.resena {
+  border-bottom: 1px dashed rgba(253, 243, 220, 0.2);
+  padding: 10px 0;
+}
+.cabecera { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.mensaje { color: var(--color-amarillo); margin-top: 6px; }
+.aviso a { color: var(--color-naranja); }

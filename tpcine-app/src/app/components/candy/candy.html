@@ -38,14 +38,22 @@
       }
     </div>
 
-    @if (totalCandy() > 0) {
+    <!-- La barra aparece si hay algo en el carrito (butacas o candy), así se puede
+         seguir al checkout también sin comprar candy -->
+     @if (carrito.cantidadItems() > 0) {
       <footer class="panel-resumen-candy">
         <div>
+          <span class="texto-items">Entradas ({{ carrito.entradas().length }}):</span>
+          <strong class="total-monto">${{ carrito.totalEntradas() }}</strong>
+          <br />
           <span class="texto-items">Candy bar:</span>
-          <strong class="total-monto">${{ totalCandy() }}</strong>
+          <strong class="total-monto">${{ carrito.totalCandy() }}</strong>
+          <br />
+          <span class="texto-items">Total:</span>
+          <strong class="total-monto">${{ carrito.total() }}</strong>
         </div>
         <div class="botones-paso">
-          <button class="btn-continuar" routerLink="/club-puntos">Continuar</button>
+          <button class="btn-continuar" routerLink="/checkout">Ir al carrito</button>
         </div>
       </footer>
     }

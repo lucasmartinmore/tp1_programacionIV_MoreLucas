@@ -1,0 +1,15 @@
+<div class="validador">
+  <h2>Validar entrada o candy</h2>
+  <p class="ayuda">Escribí el código qr</p>
+
+  <!-- #campo es una variable de plantilla: me da acceso directo al input -->
+  <input #campo type="text" placeholder="Código del QR"
+         (keyup.enter)="validar(campo.value, campo)">
+  <button (click)="validar(campo.value, campo)" [disabled]="validando()">VALIDAR</button>
+
+  @if (resultado(); as r) {
+    <div class="resultado" [class.ok]="r.ok" [class.error]="!r.ok">
+      {{ r.mensaje }}
+    </div>
+  }
+</div>
