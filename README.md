@@ -163,7 +163,7 @@ Configurar `src/environments/environments.ts` con la URL y la *publishable key* 
 - [ ] **Notificaciones:** dentro de la aplicación (tiempo real) y avisos del navegador mientras la página está abierta.
 ---
  
-## 🧰 Tecnologías
+## Tecnologías
  
 | Parte | Tecnología 
 | :--- | :--- 
