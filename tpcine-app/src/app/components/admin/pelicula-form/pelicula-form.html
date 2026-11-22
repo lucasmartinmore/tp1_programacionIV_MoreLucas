@@ -19,7 +19,7 @@
       }
     </div>
 
-        <div class="campo ancho-completo">
+    <div class="campo ancho-completo">
       <label>Géneros</label>
       <div class="generos">
         @for (g of generos(); track g.id_genero) {
@@ -61,6 +61,11 @@
     <div class="campo">
       <label>Fecha de estreno</label>
       <input type="date" [formField]="peliculaForm.fecha_estreno" />
+    </div>
+
+    <div class="campo">
+      <label>Descuento de preventa (%)</label>
+      <input type="number" [formField]="peliculaForm.descuento_preventa" />
     </div>
 
     <div class="campo campo-check">

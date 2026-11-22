@@ -1,0 +1,19 @@
+<div class="campanita">
+  <button class="btn-campana" (click)="alternar()">
+    🔔 @if (sinLeer() > 0) { <span class="contador">{{ sinLeer() }}</span> }
+  </button>
+
+  @if (abierta()) {
+    <div class="panel">
+      @for (n of lista(); track n.id_notificacion) {
+        <div class="item" [class.nueva]="!n.leida" (click)="abrir(n)">
+          <strong>{{ n.titulo }}</strong>
+          <span>{{ n.mensaje }}</span>
+          <small>{{ n.creada | date:'dd/MM HH:mm' }}</small>
+        </div>
+      } @empty {
+        <p class="vacio">No tenés notificaciones.</p>
+      }
+    </div>
+  }
+</div>

@@ -56,7 +56,7 @@ export class Compras {
       .select(`
         id_compra_entrada, total_compra, credito_usado, estado_de_compra, creado_dia,
         entradas ( id_entrada, butaca_id,
-          funciones ( fecha_hora_inicio, peliculas ( titulo_de_pelicula ), salas ( nombre_de_sala ) )
+          funciones ( id_funcion, fecha_hora_inicio, peliculas ( titulo_de_pelicula ), salas ( nombre_de_sala ) )
         )
       `)
       .eq('usuario_id', idUsuario)

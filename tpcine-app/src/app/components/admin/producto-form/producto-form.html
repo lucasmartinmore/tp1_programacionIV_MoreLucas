@@ -17,6 +17,14 @@
     </div>
 
     <div class="campo">
+      <label>Precio ($)</label>
+      <input type="number" [formField]="productoForm.precio_producto" placeholder="Ej: 4500" />
+      @if (mostrarErrores() && productoForm.precio_producto().invalid()) {
+        <span class="error">El precio debe ser mayor a 0.</span>
+      }
+    </div>
+
+    <div class="campo">
       <label>Categoría</label>
       <!-- "list" conecta el input con las sugerencias del datalist de abajo -->
       <input type="text" list="lista-categorias" [formField]="productoForm.categoria_producto" placeholder="Ej: Pochoclos" />
@@ -30,12 +38,11 @@
       }
     </div>
 
+        <div class="campo">
+      <label><input type="checkbox" [formField]="productoForm.es_combo" /> Es un combo</label>
+    </div>
     <div class="campo">
-      <label>Precio ($)</label>
-      <input type="number" [formField]="productoForm.precio_producto" />
-      @if (mostrarErrores() && productoForm.precio_producto().invalid()) {
-        <span class="error">El precio debe ser mayor a 0.</span>
-      }
+      <label><input type="checkbox" [formField]="productoForm.incluye_entrada" /> Incluye 1 entrada</label>
     </div>
 
     <div class="campo ancho-completo">

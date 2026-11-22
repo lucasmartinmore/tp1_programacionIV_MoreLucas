@@ -126,6 +126,7 @@
           <th>Formato</th>
           <th>Idioma</th>
           <th>Precio</th>
+          <th>En espera</th>
           <th></th>
         </tr>
       </thead>
@@ -139,10 +140,18 @@
             <td>{{ f.formato_funcion }}</td>
             <td>{{ f.idioma_funcion }}</td>
             <td>{{ f.precio_base | currency:'ARS':'symbol-narrow':'1.0-0' }}</td>
-            <td><button class="btn-chico peligro" (click)="eliminar(f)">BORRAR</button></td>
+            <td>{{ enEspera(f.id_funcion) }}</td>
+            <td>
+              @if (f.cancelada) {
+                <span>Cancelada</span>
+              } @else {
+                <button class="btn-chico" (click)="cancelarFuncion(f)">CANCELAR FUNCIÓN</button>
+                <button class="btn-chico peligro" (click)="eliminar(f)">BORRAR</button>
+              }
+            </td>
           </tr>
         } @empty {
-          <tr><td colspan="8">No hay funciones próximas.</td></tr>
+          <tr><td colspan="9">No hay funciones próximas.</td></tr>
         }
       </tbody>
     </table>

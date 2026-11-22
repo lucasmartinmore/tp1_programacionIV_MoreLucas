@@ -5,6 +5,7 @@ import { Auth } from '../../services/auth';
 import { Comprobantes } from '../../services/comprobantes';
 import { Compras } from '../../services/compras';
 import { Recompensas } from '../../services/recompensas';
+import { ListaEspera } from '../../services/lista-espera';
 
 @Component({
   imports: [CurrencyPipe, DatePipe, RouterLink],
@@ -15,16 +16,19 @@ import { Recompensas } from '../../services/recompensas';
 export class Perfil implements OnInit {
   perfil = signal<any>(null);
   canjes = signal<any[]>([]);
-  compras = signal<any[]>([]);                 // NUEVO: mis compras
-  mensaje = signal<string>('');                // NUEVO: resultado de cancelar
-  // Imágenes QR de los canjes de candy sin usar: la clave es el código del canje
+  compras = signal<any[]>([]);                 // mis compras
+  listasEspera = signal<any[]>([]);            // Lista de espera activa
+  mensaje = signal<string>('');                // resultado de cancelar
+  // Imágenes QR de los canjes de candy sin usar
+  // la clave es el código del canje
   qrs = signal<Record<string, string>>({});
 
   constructor(
     public auth: Auth,
     private recompensasService: Recompensas,
     private comprasService: Compras,
-    private comprobantes: Comprobantes
+    private comprobantes: Comprobantes,
+    private esperaService: ListaEspera
   ) {}
 
   async ngOnInit() {
@@ -48,6 +52,9 @@ export class Perfil implements OnInit {
 
     const resultadoCanjes = await this.recompensasService.getMisCanjes(usuario.id);
     this.canjes.set(resultadoCanjes.data || []);
+
+    const resultadoEspera = await this.esperaService.misListas(usuario.id);
+    this.listasEspera.set(resultadoEspera.data || []);
 
     // El QR de candy lleva el prefijo "CANJE" 
     // para que el validador lo reconozca
@@ -92,6 +99,7 @@ export class Perfil implements OnInit {
       return;
     }
 
+    const funcion = this.funcionDe(compra);
     const resultado = await this.comprasService.cancelarConCredito(compra['id_compra_entrada']);
 
     if (resultado.error) {
@@ -101,7 +109,18 @@ export class Perfil implements OnInit {
       return;
     }
 
+    // Si había alguien en lista de espera para esta función
+    // le avisa con ventana de 15 min
+    if (funcion?.['id_funcion']) {
+      await this.esperaService.avanzarCola(funcion['id_funcion']);
+    }
+
     this.mensaje.set('Compra cancelada. Se acreditaron $' + resultado.data + ' a tu crédito.');
+    await this.cargar();
+  }
+
+  async salirEspera(idEspera: number) {
+    await this.esperaService.salir(idEspera);
     await this.cargar();
   }
 }

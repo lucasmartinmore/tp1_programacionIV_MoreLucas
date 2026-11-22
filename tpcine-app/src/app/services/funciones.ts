@@ -10,12 +10,14 @@ export class Funciones {
     this.supabase = createClient(environment.supabaseUrl, environment.supabasePublishableKey);
   }
 
-  // Todas las funciones (horarios) de una película, de la más próxima a la más lejana
+  // Todas las funciones (horarios) de una película
+  // de la más próxima a la más lejana (excluye las canceladas)
   getFuncionesDePelicula(peliculaId: string) {
     return this.supabase
       .from('funciones')
       .select('*')
       .eq('pelicula_id', peliculaId)
+      .eq('cancelada', false)
       .order('fecha_hora_inicio', { ascending: true });
   }
 
@@ -35,11 +37,13 @@ export class Funciones {
       .limit(200);
   }
 
-  // Funciones que caen dentro de un período (de todas las salas): se usan para buscar sala libre
+  // Funciones que caen dentro de un período (de todas las salas)
+  // se usan para buscar sala libre (ignora funciones canceladas)
   getFuncionesEnPeriodo(desdeISO: string, hastaISO: string) {
     return this.supabase
       .from('funciones')
       .select('*')
+      .eq('cancelada', false)
       .lt('fecha_hora_inicio', hastaISO)
       .gt('fecha_hora_fin', desdeISO);
   }
@@ -51,7 +55,8 @@ export class Funciones {
       .order('nombre_de_sala', { ascending: true });
   }
 
-  // Inserta varias funciones de una sola vez (recibe un array)
+  // Inserta varias funciones de una sola vez 
+  // (recibe un array)
   crearFunciones(funciones: any[]) {
     return this.supabase.from('funciones').insert(funciones);
   }
@@ -60,11 +65,16 @@ export class Funciones {
     return this.supabase.from('funciones').delete().eq('id_funcion', id);
   }
 
-  // Funcion con los datos de su pelicula y su sala (para el checkout y el ticket)
+  cancelarFuncion(idFuncion: string) {
+    return this.supabase.rpc('cancelar_funcion', { p_funcion: idFuncion });
+  }
+
+  // Funcion con los datos de su pelicula y su sala 
+  // (para el checkout y el ticket)
   getFuncionDetalle(idFuncion: string) {
     return this.supabase
       .from('funciones')
-      .select('*, peliculas(titulo_de_pelicula, restriccion_de_edad), salas(nombre_de_sala)')
+      .select('*, peliculas(titulo_de_pelicula, restriccion_de_edad, fecha_estreno, descuento_preventa), salas(nombre_de_sala)')
       .eq('id_funcion', idFuncion)
       .single();
   }

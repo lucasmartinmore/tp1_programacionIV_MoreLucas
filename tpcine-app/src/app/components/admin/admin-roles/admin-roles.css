@@ -1,0 +1,88 @@
+h3 {
+  color: var(--color-crema);
+  margin: 18px 0 12px;
+}
+
+.form-admin {
+  max-width: 720px;
+  background-color: #1b2838;
+  border: 1px solid #2a3a4d;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.campo label {
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+input, select {
+  background-color: #0e1621;
+  border: 1px solid #2a3a4d;
+  border-radius: 6px;
+  padding: 9px 12px;
+  color: var(--color-crema);
+  font-size: 0.95rem;
+}
+
+.checks-secciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin-bottom: 16px;
+}
+
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-crema);
+  text-transform: uppercase;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.btn-guardar {
+  background-color: var(--color-naranja);
+  color: #fff;
+  font-family: var(--fuente-retro);
+  border: 1px solid var(--color-amarillo);
+  border-radius: 6px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.lista-usuarios {
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fila-usuario {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  background-color: var(--color-card);
+  border: 1px solid var(--color-cyan-vintage);
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+.rol-base {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  margin-left: 6px;
+}
+
+.error { color: #ff7a7a; margin-bottom: 10px; }
+.ok { color: var(--color-amarillo); margin-bottom: 10px; }

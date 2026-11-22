@@ -3,8 +3,10 @@ import { Component, OnInit, signal } from '@angular/core';
 import { Pelicula } from '../../../models/pelicula';
 import { Peliculas } from '../../../services/peliculas';
 import { Funciones } from '../../../services/funciones';
+import { ListaEspera } from '../../../services/lista-espera';
 
-// Tiempo min entre el fin de una funcion y el inicio de la prox en la misma sala
+// Tiempo min entre el fin de una funcion 
+// y el inicio de la prox en la misma sala
 const MARGEN_MINUTOS = 30;
 
 @Component({
@@ -18,6 +20,7 @@ export class AdminFunciones implements OnInit {
   peliculas = signal<Pelicula[]>([]);
   salas = signal<any[]>([]);
   funciones = signal<any[]>([]);
+  conteoEspera = signal<Record<string, number>>({});
   cargando = signal<boolean>(true);
 
   // Lo que elige el admin en el formulario
@@ -29,6 +32,7 @@ export class AdminFunciones implements OnInit {
   fechaDesde = signal<string>('');
   semanas = signal<number>(1);
   diasElegidos = signal<number[]>([]);
+  
 
   // Filtro de la tabla de funciones (por película)
   filtroPelicula = signal<string>('');
@@ -38,7 +42,7 @@ export class AdminFunciones implements OnInit {
   errorMensaje = signal<string>('');
   enviando = signal<boolean>(false);
 
-  // Opciones fijas: horas de 30 en 30 minutos y dias de la semana.
+  // Opciones fijas: horas de 30 en 30 minutos y dias de la semana
   // El numero del dia es el de Date.getDay(): domingo = 0, lunes = 1, y asi
   horas: string[] = [];
   dias = [
@@ -51,7 +55,11 @@ export class AdminFunciones implements OnInit {
     { numero: 0, letra: 'D', nombre: 'Domingo' },
   ];
 
-  constructor(private peliculasService: Peliculas, private funcionesService: Funciones) {
+  constructor(
+    private peliculasService: Peliculas,
+    private funcionesService: Funciones,
+    private esperaService: ListaEspera
+  ) {
     // Genera "10:00", "10:30", ... 
     for (let h = 10; h <= 23; h++) {
       this.horas.push(String(h).padStart(2, '0') + ':00');
@@ -75,6 +83,18 @@ export class AdminFunciones implements OnInit {
   async cargarFunciones() {
     const resultado = await this.funcionesService.getFuncionesProximas();
     this.funciones.set(resultado.data || []);
+
+    const rEspera = await this.esperaService.conteoPorFuncion();
+    const mapa: Record<string, number> = {};
+    for (const fila of rEspera.data || []) {
+      const id = fila['funcion_id'];
+      mapa[id] = (mapa[id] ?? 0) + 1;
+    }
+    this.conteoEspera.set(mapa);
+  }
+
+  enEspera(idFuncion: string): number {
+    return this.conteoEspera()[idFuncion] ?? 0;
   }
 
   /*=========================================
@@ -193,7 +213,8 @@ export class AdminFunciones implements OnInit {
     this.cargarFunciones();
   }
 
-  // Devuelve la lista de { inicio, fin } para los días elegidos, desde la fecha de inicio
+  // Devuelve la lista de { inicio, fin } 
+  // para los días elegidos, desde la fecha de inicio
   private armarCandidatas(duracionMinutos: number) {
     const candidatas: { inicio: Date; fin: Date }[] = [];
     const ahora = new Date();
@@ -220,7 +241,8 @@ export class AdminFunciones implements OnInit {
     return candidatas;
   }
 
-  // Prueba las salas en orden y devuelve la primera que no tenga ninguna funcion "pegada"
+  // Prueba las salas en orden y devuelve
+  // la primera que no tenga ninguna funcion "pegada"
   private buscarSalaLibre(inicio: Date, fin: Date, existentes: any[]) {
     for (const sala of this.salas()) {
       const deEstaSala = existentes.filter(f => f['sala_id'] === sala['id_sala']);
@@ -232,7 +254,8 @@ export class AdminFunciones implements OnInit {
     return null;
   }
 
-  // Conflicto = empieza antes de que termine la otra + margen, y termina despues de que empiece la otra - margen
+  // Conflicto = empieza antes de que termine la otra + margen
+  // y termina despues de que empiece la otra - margen
   private haySolapamiento(inicio: Date, fin: Date, funcionesDeLaSala: any[]): boolean {
     const margen = MARGEN_MINUTOS * 60000;
 
@@ -270,5 +293,16 @@ export class AdminFunciones implements OnInit {
       return;
     }
     this.cargarFunciones();
+  }
+
+  async cancelarFuncion(f: any) {
+    if (!confirm('¿Cancelar la función? Se acredita a todos los compradores y se les avisa.')) { return; }
+    const r = await this.funcionesService.cancelarFuncion(f.id_funcion);
+    if (r.error) {
+      this.errorMensaje.set(r.error.message);
+      return;
+    }
+    alert('Función cancelada. Compras afectadas: ' + r.data);
+    await this.cargarFunciones();
   }
 }

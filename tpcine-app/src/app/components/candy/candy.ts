@@ -28,7 +28,16 @@ export class Candy implements OnInit {
     });
   }
 
-  // Cuántas unidades de este producto hay ya en el carrito (0 si no está)
+  // Los combos van primero (destacados) después el resto
+  //  cada grupo en su mismo orden
+  productosOrdenados(): ProductoCandy[] {
+    const combos = this.productos().filter(p => p.es_combo);
+    const resto = this.productos().filter(p => !p.es_combo);
+    return [...combos, ...resto];
+  }
+
+  // Cuántas unidades de este producto
+  //  hay ya en el carrito (0 si no está)
   getCantidad(idProducto: string): number {
     const item = this.carrito.candys().find(c => c.id_producto === idProducto);
     return item ? item.cantidad : 0;

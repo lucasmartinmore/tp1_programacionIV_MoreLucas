@@ -4,9 +4,10 @@ import { Auth } from '../../services/auth';
 import { Carrito } from '../../services/carrito';
 import { AdminDirective } from '../../directivas/admin.directive';
 import { PersonalDirective } from '../../directivas/personal.directive';
+import { Campanita } from '../campanita/campanita';
 
 @Component({
-  imports: [RouterLink, RouterLinkActive, AdminDirective, PersonalDirective],
+  imports: [RouterLink, RouterLinkActive, AdminDirective, PersonalDirective, Campanita],
   selector: 'app-navbar',
   styleUrl: './navbar.css',
   templateUrl: './navbar.html',

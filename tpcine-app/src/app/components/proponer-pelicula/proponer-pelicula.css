@@ -1,0 +1,85 @@
+.proponer {
+  max-width: 650px;
+  margin: 0 auto;
+  padding: 30px 16px;
+  color: var(--color-crema, #fdf3dc);
+}
+
+h2, h3 {
+  font-family: var(--fuente-retro, sans-serif);
+  color: var(--color-amarillo, #f7b218);
+  letter-spacing: 1.5px;
+}
+
+h2 {
+  border-left: 5px solid var(--color-cyan-vintage, #2a9d8f);
+  padding-left: 12px;
+  margin-bottom: 20px;
+}
+
+h3 {
+  margin-top: 30px;
+  margin-bottom: 12px;
+  font-size: 1.2rem;
+}
+
+.form-caja {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background-color: #12474a;
+  border: 2px solid var(--color-amarillo, #f7b218);
+  border-radius: 6px;
+  padding: 18px;
+  box-shadow: 4px 4px 0px #000000;
+}
+
+.form-caja input,
+.form-caja textarea {
+  background-color: #0b1f28;
+  border: 1.5px solid var(--color-cyan-vintage, #2a9d8f);
+  border-radius: 4px;
+  padding: 10px 12px;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.form-caja button {
+  background-color: var(--color-naranja, #e43f17);
+  color: #ffffff;
+  border: 2px solid var(--color-amarillo, #f7b218);
+  border-radius: 4px;
+  padding: 10px;
+  font-family: var(--fuente-retro, sans-serif);
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: 3px 3px 0px #000000;
+}
+
+.form-caja button:hover {
+  background-color: var(--color-rojo-vintage, #a31432);
+}
+
+.mensaje {
+  color: var(--color-amarillo, #f7b218);
+  font-weight: 600;
+  margin: 4px 0 0 0;
+}
+
+.item-propuesta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #12474a;
+  border: 1px solid var(--color-cyan-vintage, #2a9d8f);
+  border-radius: 4px;
+  padding: 10px 14px;
+  margin-bottom: 8px;
+}
+
+.pendiente { color: var(--color-amarillo, #f7b218); }
+.aceptada { color: #4ade80; }
+.rechazada { color: #f87171; }
+.vacio { color: #94a3b8; }

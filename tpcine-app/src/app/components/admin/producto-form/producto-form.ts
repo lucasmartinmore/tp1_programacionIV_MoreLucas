@@ -10,6 +10,8 @@ interface FormProducto {
   precio_producto: number;
   categoria_producto: string;
   imagen_url: string;
+  es_combo: boolean;
+  incluye_entrada: boolean;
 }
 
 @Component({
@@ -25,6 +27,8 @@ export class ProductoForm implements OnInit {
     precio_producto: 0,
     categoria_producto: '',
     imagen_url: '',
+    es_combo: false, 
+    incluye_entrada: false,
   });
 
   productoForm = form(this.productoModel, (schemaPath) => {
@@ -82,6 +86,8 @@ export class ProductoForm implements OnInit {
       precio_producto: p['precio_producto'],
       categoria_producto: p['categoria_producto'],
       imagen_url: p['imagen_url'] ?? '',
+      es_combo: p['es_combo'] ?? false,
+      incluye_entrada: p['incluye_entrada'] ?? false,
     });
   }
 
@@ -105,6 +111,8 @@ export class ProductoForm implements OnInit {
       precio_producto: Number(datos.precio_producto),
       categoria_producto: datos.categoria_producto.trim(),
       imagen_url: datos.imagen_url,
+      es_combo: datos.es_combo,
+      incluye_entrada: datos.incluye_entrada,
     };
 
     const resultado = this.modoEdicion()

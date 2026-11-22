@@ -23,7 +23,30 @@ h3 { color: var(--color-crema); margin: 26px 0 10px; }
 }
 
 .tarjeta strong { font-size: 1.8rem; color: var(--color-amarillo); }
-.tarjeta a { color: var(--color-naranja); }
+
+.tarjeta a {
+  display: inline-block;
+  align-self: flex-start;
+  margin-top: auto;
+  padding: 7px 14px;
+  background-color: var(--color-naranja);
+  color: var(--color-crema);
+  font-family: var(--fuente-retro);
+  font-size: 0.75rem;
+  letter-spacing: 0.8px;
+  text-decoration: none;
+  border: 1.5px solid var(--color-amarillo);
+  border-radius: 5px;
+  box-shadow: 2px 2px 0px #000;
+  transition: all 0.15s ease;
+}
+
+.tarjeta a:hover {
+  background-color: var(--color-amarillo);
+  color: #12474a;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px #000;
+}
 
 .canje {
   display: flex;
@@ -61,7 +84,9 @@ h3 { color: var(--color-crema); margin: 26px 0 10px; }
 .btn-cancelar {
   background: var(--color-rojo-vintage);
   color: #fff;
-  border: none;
+  font-family: var(--fuente-retro);
+  font-size: 0.75rem;
+  border: 1px solid #ff7b54;
   border-radius: 6px;
   padding: 8px 14px;
   cursor: pointer;

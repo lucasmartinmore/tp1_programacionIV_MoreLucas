@@ -5,6 +5,7 @@ import { Peliculas } from '../../services/peliculas';
 import { DuracionPipe } from '../../pipes/duracion-pipe';
 import { FiltroPipe } from '../../pipes/filtro-pipe';
 import { HoverZoomDirective } from '../../directivas/hover-zoom.directive';
+import { estadoPreventa } from '../../utils/preventa';
 
 @Component({
   selector: 'app-cartelera',
@@ -16,10 +17,12 @@ export class Cartelera implements OnInit {
   peliculas = signal<Pelicula[]>([]);
   cargando = signal<boolean>(true);
 
-  // Texto que escribe el usuario en el buscador; el pipe "filtro" lo usa para filtrar la lista
+  // Texto que escribe el usuario en el buscador; 
+  // el pipe "filtro" lo usa para filtrar la lista
   busqueda = signal<string>('');
 
-  // Genero elegido en los botones ('' significa "todos")
+  // Genero elegido en los botones 
+  // ('' significa "todos")
   generoElegido = signal<string>('');
 
   constructor(
@@ -38,7 +41,8 @@ export class Cartelera implements OnInit {
     });
   }
 
-  // Se ejecuta cada vez que el usuario escribe una letra en el buscador
+  // Se ejecuta cada vez que el usuario
+  //  escribe una letra en el buscador
   buscar(event: Event): void {
     this.busqueda.set((event.target as HTMLInputElement).value);
   }
@@ -64,7 +68,8 @@ export class Cartelera implements OnInit {
     this.generoElegido.set(nombre);
   }
 
-  // Las 3 peliculas mas vendidas, de mayor a menor (solo cuentan las que vendieron algo)
+  // Las 3 peliculas mas vendidas, de mayor a menor 
+  // (solo cuentan las que vendieron algo)
   top3(): Pelicula[] {
     // [...] hace una copia de la lista para ordenarla sin modificar la original
     return [...this.peliculas()]
@@ -80,6 +85,12 @@ export class Cartelera implements OnInit {
     return this.peliculas().filter(p =>
       genero === '' || (p.peliculas_generos ?? []).some(pg => pg.generos.nombre === genero)
     );
+  }
+
+  // Devuelve true si faltan 7 días o menos para el estreno
+  // y tiene descuento configurado
+  enPreventa(p: Pelicula): boolean {
+    return estadoPreventa(p.fecha_estreno) === 'preventa' && (p.descuento_preventa ?? 0) > 0;
   }
 
   seleccionarPelicula(idPelicula?: string): void {

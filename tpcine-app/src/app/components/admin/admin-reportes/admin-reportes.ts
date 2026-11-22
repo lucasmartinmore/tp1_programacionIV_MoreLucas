@@ -44,6 +44,9 @@ export class AdminReportes implements OnInit {
       return;
     }
 
+    this.desde = desde;
+    this.hasta = hasta;
+
     const resultado = await this.reportesService.getComprasEnRango(desde, hasta);
 
     if (resultado.error) {
@@ -81,5 +84,61 @@ export class AdminReportes implements OnInit {
     this.filas.set(lista);
     this.totalEntradas.set(sumaEntradas);
     this.totalFacturado.set(sumaFacturado);
+  }
+
+  // Descarga planilla compatible con Excel (.csv con BOM UTF-8)
+  exportarExcel() {
+    const lineas = ['Día;Entradas vendidas;Facturado ($)'];
+    for (const f of this.filas()) {
+      lineas.push(`${f.dia};${f.entradas};${f.facturado}`);
+    }
+    lineas.push(`TOTAL;${this.totalEntradas()};${this.totalFacturado()}`);
+
+    const blob = new Blob(['\uFEFF' + lineas.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const enlace = document.createElement('a');
+    enlace.href = url;
+    enlace.download = `reporte-ventas-${this.desde}-a-${this.hasta}.csv`;
+    enlace.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // Abre vista limpia lista para guardar como PDF
+  exportarPdf() {
+    const filasHtml = this.filas()
+      .map(f => `<tr><td>${f.dia}</td><td>${f.entradas}</td><td>$${f.facturado}</td></tr>`)
+      .join('');
+
+    const ventana = window.open('', '_blank');
+    if (!ventana) return;
+
+    ventana.document.write(`
+      <html>
+        <head>
+          <title>Reporte de ventas (${this.desde} a ${this.hasta})</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 24px; color: #111; }
+            h2 { margin-bottom: 4px; }
+            p { color: #555; margin-top: 0; }
+            table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+            th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+            th { background: #f2f2f2; }
+            tfoot td { font-weight: bold; background: #fafafa; }
+          </style>
+        </head>
+        <body>
+          <h2>CINEMORE — Reporte de ventas</h2>
+          <p>Período: ${this.desde} al ${this.hasta}</p>
+          <table>
+            <thead><tr><th>Día</th><th>Entradas vendidas</th><th>Facturado</th></tr></thead>
+            <tbody>${filasHtml}</tbody>
+            <tfoot><tr><td>TOTAL</td><td>${this.totalEntradas()}</td><td>$${this.totalFacturado()}</td></tr></tfoot>
+          </table>
+        </body>
+      </html>
+    `);
+    ventana.document.close();
+    ventana.focus();
+    ventana.print();
   }
 }

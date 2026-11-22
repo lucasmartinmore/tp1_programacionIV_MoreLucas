@@ -8,16 +8,22 @@
     <p class="cargando">Cargando delicias del candy...</p>
   } @else {
     <div class="grilla-candy">
-      @for (prod of productos(); track prod.id_producto) {
-        <div class="tarjeta-candy">
+      @for (prod of productosOrdenados(); track prod.id_producto) {
+        <div class="tarjeta-candy" [class.combo]="prod.es_combo">
           <div class="img-wrap">
             <img [src]="prod.imagen_url" [alt]="prod.nombre_producto" loading="lazy" />
             <span class="badge-categoria">{{ prod.categoria_producto }}</span>
+            @if (prod.es_combo) {
+              <span class="badge-combo"> COMBO</span>
+            }
           </div>
 
           <div class="info-candy">
             <h3>{{ prod.nombre_producto }}</h3>
             <p class="descripcion">{{ prod.descripcion_producto }}</p>
+            @if (prod.incluye_entrada) {
+              <span class="incluye-entrada"> Incluye 1 entrada</span>
+            }
             <span class="precio">${{ prod.precio_producto }}</span>
           </div>
 

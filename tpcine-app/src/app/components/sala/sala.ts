@@ -1,13 +1,16 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, OnDestroy, OnInit, signal } from '@angular/core';
-import { Router, ActivatedRoute} from '@angular/router';
+import { Component, computed, OnDestroy, OnInit, signal } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Asiento } from '../asiento/asiento';
 import { ButacasService } from '../../services/butacas';
 import { Butaca, FilaSala } from '../../models/butaca';
 import { Carrito } from '../../services/carrito';
+import { Auth } from '../../services/auth';
+import { ListaEspera } from '../../services/lista-espera';
 
-// Lo que se suma al precio de la función cuando la butaca es VIP (filas R, S y T)
+// Lo que se suma al precio de la función
+// cuando la butaca es VIP (filas R, S y T)
 const RECARGO_VIP = 2500;
 
 @Component({
@@ -24,24 +27,40 @@ export class Sala implements OnInit, OnDestroy {
   precioBase = signal<number>(0);
   precioTotal = signal<number>(0);
 
+  // Lista de espera
+  totalButacas = signal<number>(0);
+  libres = computed(() => Math.max(0, this.totalButacas() - this.idsOcupadas().length));
+  miEspera = signal<any>(null);
+  mensajeEspera = signal<string>('');
+
   private funcionId = '';
+  private usuarioId = '';
   private suscripcion?: Subscription;
 
   constructor(
     private butacasService: ButacasService,
     private route: ActivatedRoute,
     private carrito: Carrito,
-    private router: Router
+    private router: Router,
+    private auth: Auth,
+    private esperaService: ListaEspera
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.funcionId = this.route.snapshot.params['id'];
+    const u = (await this.auth.getUser()).data.user;
+    this.usuarioId = u?.id ?? '';
+
     if (this.funcionId) {
-      this.cargarSala();
+      await this.cargarSala();
+      if (this.usuarioId) {
+        await this.cargarMiEspera();
+      }
     }
   }
 
-  // Al salir de la pantalla cierro la suscripción al realtime (igual que cosas-realtime de la cátedra)
+  // Al salir de la pantalla cierro la suscripción
+  // al realtime 
   ngOnDestroy() {
     this.suscripcion?.unsubscribe();
   }
@@ -49,7 +68,8 @@ export class Sala implements OnInit, OnDestroy {
   async cargarSala() {
     this.cargando.set(true);
 
-    // 1. Datos de la función: de acá sale la sala y el precio base
+    // 1. Datos de la función
+    // de acá sale la sala y el precio base
     const resultadoFuncion = await this.butacasService.getFuncionById(this.funcionId);
 
     if (resultadoFuncion.error || !resultadoFuncion.data) {
@@ -71,11 +91,38 @@ export class Sala implements OnInit, OnDestroy {
       tipo: b['tipo_de_butaca'],
     }));
 
+    this.totalButacas.set(butacas.length);
     this.armarFilas(butacas);
     this.cargando.set(false);
 
-    // 3. Me suscribo para ver en vivo qué butacas se van ocupando
+    // 3. Me suscribo para ver en vivo
+    // qué butacas se van ocupando
     this.escucharOcupadas();
+  }
+
+  async cargarMiEspera() {
+    const r = await this.esperaService.miTurno(this.funcionId, this.usuarioId);
+    this.miEspera.set(r.data);
+  }
+
+  async anotarmeEspera() {
+    this.mensajeEspera.set('');
+    if (!this.usuarioId) {
+      this.router.navigate(['/login']);
+      return;
+    }
+    const r = await this.esperaService.anotarme(this.funcionId, this.usuarioId);
+    if (r.error) {
+      this.mensajeEspera.set(r.error.message);
+      return;
+    }
+    await this.cargarMiEspera();
+  }
+
+  async salirEspera() {
+    if (!this.miEspera()) return;
+    await this.esperaService.salir(this.miEspera().id_espera);
+    this.miEspera.set(null);
   }
 
   armarFilas(asientos: Butaca[]) {
@@ -90,13 +137,15 @@ export class Sala implements OnInit, OnDestroy {
     this.filas.set(resultado);
   }
 
-  // Cada vez que alguien compra una butaca, el servicio emite la lista actualizada de ocupadas
+  // Cada vez que alguien compra una butaca
+  // el servicio emite la lista actualizada de ocupadas
   escucharOcupadas() {
     this.suscripcion = this.butacasService.getOcupadasRealtime(this.funcionId).subscribe({
       next: (ids) => {
         this.idsOcupadas.set(ids);
 
-        // Si otra persona me ganó una butaca que yo ya había elegido, se la saco a mi selección
+        // Si otra persona me ganó una butaca que yo ya había elegido
+        // se la saco a mi selección
         const todaviaLibres = this.butacasElegidas().filter(b => !ids.includes(b.id_butaca));
         this.butacasElegidas.set(todaviaLibres);
         this.calcularPrecio();
@@ -135,7 +184,8 @@ export class Sala implements OnInit, OnDestroy {
     this.calcularPrecio();
   }
 
-  // Precio de una butaca: el de la función, más el recargo si es VIP
+  // Precio de una butaca: el de la función
+  // más el recargo si es VIP
   precioDeButaca(butaca: Butaca): number {
     return butaca.tipo === 'VIP' ? this.precioBase() + RECARGO_VIP : this.precioBase();
   }
@@ -148,7 +198,8 @@ export class Sala implements OnInit, OnDestroy {
     this.precioTotal.set(subtotal);
   }
 
-   // Guarda las butacas elegidas en el carrito y sigue a la candy bar
+  // Guarda las butacas elegidas en
+  // el carrito y sigue a la candy bar
   continuar() {
     const items = this.butacasElegidas().map(b => ({
       butaca_id: b.id_butaca,

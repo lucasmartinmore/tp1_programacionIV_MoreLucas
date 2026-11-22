@@ -46,7 +46,7 @@
   margin: 0;
 }
 
-/* GRILLA DE CHIPS DE HORARIO (reemplaza al datepicker que NO queríamos) */
+/* GRILLA DE CHIPS DE HORARIO */
 .lista-chips {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -71,6 +71,14 @@
   transform: translateY(-4px);
   border-color: var(--color-amarillo, #f7b218);
   box-shadow: 0 12px 24px rgba(247, 178, 24, 0.15);
+}
+
+.chip-fecha {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #72cbd8;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .chip-hora {

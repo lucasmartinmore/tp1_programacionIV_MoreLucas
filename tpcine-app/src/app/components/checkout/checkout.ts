@@ -3,10 +3,13 @@ import { Component, OnInit, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { Carrito } from '../../services/carrito';
 import { Auth } from '../../services/auth';
+import { CandyService } from '../../services/candys';
 import { Compras } from '../../services/compras';
 import { Cupones } from '../../services/cupones';
 import { Funciones } from '../../services/funciones';
 import { Recompensas } from '../../services/recompensas';
+import { ListaEspera } from '../../services/lista-espera';
+import { estadoPreventa } from '../../utils/preventa';
 
 @Component({
   imports: [CurrencyPipe, DatePipe, RouterLink],
@@ -26,14 +29,17 @@ export class Checkout implements OnInit {
   usarCanje = signal<boolean>(false);    // si el usuario tildo "usar entrada gratis"
   credito = signal<number>(0);               // saldo de credito del usuario
   usarCredito = signal<boolean>(false);      // si tildo "usar mi crédito"
+  idsComboConEntrada = signal<string[]>([]);      // ids de productos que incluyen entrada
 
   constructor(
     public carrito: Carrito,
     private auth: Auth,
+    private candyService: CandyService,
     private compras: Compras,
     private cuponesService: Cupones,
     private funcionesService: Funciones,
     private recompensasService: Recompensas,
+    private esperaService: ListaEspera,
     private router: Router
   ) {}
 
@@ -41,6 +47,8 @@ export class Checkout implements OnInit {
     if (this.carrito.funcionId() === '') {
       return;
     }
+    const resultadoCombos = await this.candyService.getCombosConEntrada();
+    this.idsComboConEntrada.set((resultadoCombos.data || []).map((c: any) => c['id_producto']));
 
     const resultadoFuncion = await this.funcionesService.getFuncionDetalle(this.carrito.funcionId());
     this.funcion.set(resultadoFuncion.data);
@@ -66,7 +74,8 @@ export class Checkout implements OnInit {
     const resultadoCupones = await this.cuponesService.getTodosLosCupones();
     const cupones = (resultadoCupones.data || []).filter((c: any) => c['activo']);
 
-    // Armo la lista de cupones que le corresponden y me quedo con el de mayor porcentaje
+    // Armo la lista de cupones que le corresponden 
+    // y me quedo con el de mayor porcentaje
     const candidatos: any[] = [];
 
     const cantidadCompras = await this.compras.contarComprasDelUsuario(idUsuario);
@@ -121,17 +130,51 @@ export class Checkout implements OnInit {
     return this.carrito.entradas().some(e => e.tipo === 'VIP');
   }
 
-    alternarCanje() {
+  alternarCanje() {
     this.usarCanje.set(!this.usarCanje());
   }
 
-  // La entrada gratis descuenta el precio de la entrada MAS BARATA del carrito
+  // La entrada gratis descuenta el precio 
+  // de la entrada MAS BARATA del carrito
   descuentoCanje(): number {
     const entradas = this.carrito.entradas();
     if (!this.usarCanje() || entradas.length === 0) {
       return 0;
     }
     return Math.min(...entradas.map(e => e.precio));
+  }
+
+  // Por cada combo con entrada en el carrito, la entrada más barata no se cobra
+  // Ordeno precios de menor a mayor y descuento tantas entradas
+  //  como combos con entrada haya comprado
+  descuentoCombos(): number {
+    let cantidadCombos = 0;
+    for (const c of this.carrito.candys()) {
+      if (this.idsComboConEntrada().includes(c.id_producto)) {
+        cantidadCombos += c.cantidad;
+      }
+    }
+
+    const precios = this.carrito.entradas().map(e => e.precio).sort((a, b) => a - b);
+    let descuento = 0;
+    for (let i = 0; i < cantidadCombos && i < precios.length; i++) {
+      descuento += precios[i];
+    }
+    return descuento;
+  }
+
+  // Preventa de esta película (7 días antes del estreno)
+  estadoPreventa(): 'antes' | 'preventa' | 'normal' {
+    return estadoPreventa(this.funcion()?.peliculas?.fecha_estreno);
+  }
+
+  descuentoPreventa(): number {
+    if (this.estadoPreventa() !== 'preventa') {
+      return 0;
+    }
+    const porcentaje = this.funcion()?.peliculas?.descuento_preventa ?? 0;
+    const entradas = this.carrito.entradas().reduce((suma, e) => suma + e.precio, 0);
+    return Math.round(entradas * porcentaje / 100);
   }
 
   // El cupon se calcula sobre lo que queda despues del canje
@@ -144,17 +187,17 @@ export class Checkout implements OnInit {
   }
 
   descuento(): number {
-    return this.descuentoCanje() + this.descuentoCupon();
+    return this.descuentoCanje() + this.descuentoCupon() + this.descuentoCombos() + this.descuentoPreventa();
   }
 
-    alternarCredito() {
+  alternarCredito() {
     this.usarCredito.set(!this.usarCredito());
   }
 
   // Total despues de cupon y entrada gratis
   // pero antes de usar credito
   totalSinCredito(): number {
-    return this.carrito.total() - this.descuento();
+    return Math.max(0, this.carrito.total() - this.descuento());
   }
 
   // El credito se usa hasta donde alcance
@@ -173,12 +216,15 @@ export class Checkout implements OnInit {
 
   // Texto de por que no se puede pagar ('' = se puede pagar)
   mensajeBloqueo(): string {
+    if (this.estadoPreventa() === 'antes') {
+      return 'La venta de esta película todavía no está habilitada (la preventa empieza 7 días antes del estreno).';
+    }
     const r = this.restriccion();
     if (r === 0) {
       return '';
     }
     if (!this.hayUsuario()) {
-      return 'Esta película es +' + r + ' y tenés ' + this.edad() + ' años: no podés comprar esta entrada.';
+      return 'Esta película es +' + r + ': iniciá sesión para verificar tu edad antes de comprar.';
     }
     if (this.edad() === null) {
       return 'No pudimos verificar tu edad. Revisá tu fecha de nacimiento en el perfil.';
@@ -229,6 +275,7 @@ export class Checkout implements OnInit {
     // 2. Cabecera de la compra. El id lo genero yo para no tener que leer la fila de vuelta.
     const idCompra = crypto.randomUUID();
     const cupon = this.cupon();
+    const funcionIdActual = this.carrito.funcionId();
 
     const resultadoCompra = await this.compras.crearCompra({
       id_compra_entrada: idCompra,
@@ -250,7 +297,7 @@ export class Checkout implements OnInit {
     const itemsEntradas = this.carrito.entradas();
     const filasEntradas = itemsEntradas.map(e => ({
       compra_id: idCompra,
-      funcion_id: this.carrito.funcionId(),
+      funcion_id: funcionIdActual,
       butaca_id: e.butaca_id,
       qr_code_entrada: crypto.randomUUID(),
       precio_pagado: e.precio,
@@ -259,11 +306,18 @@ export class Checkout implements OnInit {
     const resultadoEntradas = await this.compras.crearEntradas(filasEntradas);
 
     if (resultadoEntradas.error) {
-      // Lo mas probable: alguien compra una de esas butacas justo antes (restriccion unica)
+      // Lo mas probable: alguien compra una de esas butacas
+      // justo antes (restriccion unica)
       this.errorMensaje.set('Alguna de las butacas ya fue vendida. Volvé a elegir tus asientos.');
       await this.compras.cancelarCompra(idCompra);   // si es anónimo RLS no lo deja; es inofensivo
       this.enviando.set(false);
       return;
+    }
+
+    // Si venía desde la lista de espera (turno NOTIFICADO)
+    // marcamos su turno como COMPRADO
+    if (usuario && funcionIdActual) {
+      await this.esperaService.marcarComprado(funcionIdActual, usuario.id);
     }
 
     // 4. Detalle de candy
@@ -311,6 +365,4 @@ export class Checkout implements OnInit {
     this.enviando.set(false);
     this.router.navigate(['/ticket']);
   }
-
-  
 }

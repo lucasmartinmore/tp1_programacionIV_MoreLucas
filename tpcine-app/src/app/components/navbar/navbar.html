@@ -4,12 +4,12 @@
     CINE<span>MORE</span>
   </div>
 
-  <!-- NUEVO: botón de hamburguesa, solo visible en pantallas chicas -->
+  <!-- Bbotón de hamburguesa, solo visible en pantallas chicas -->
   <button class="btn-menu" (click)="alternarMenu()" aria-label="Abrir menú">
     {{ menuAbierto() ? '✕' : '☰' }}
   </button>
 
-  <!-- NUEVO: al tocar cualquier opción, el menú se vuelve a cerrar -->
+  <!-- Al tocar cualquier opción, el menú se vuelve a cerrar -->
   <ul class="nav-links" (click)="menuAbierto.set(false)">
     <li><a routerLink="/peliculas" routerLinkActive="active">PELÍCULAS</a></li>
     <li><a routerLink="/candy" routerLinkActive="active">CANDY</a></li>
@@ -17,7 +17,7 @@
     <li><a routerLink="/proximamente" routerLinkActive="active">PRÓXIMAMENTE</a></li>
   </ul>
 
-  <div class="nav-acciones" (click)="menuAbierto.set(false)">
+ <div class="nav-acciones" (click)="menuAbierto.set(false)">
     <button class="btn-login" routerLink="/checkout" [disabled]="carrito.cantidadItems() === 0">
       CARRITO ({{ carrito.cantidadItems() }})
     </button>
@@ -27,10 +27,10 @@
       <button *appPersonal class="btn-login" routerLink="/empleado">VALIDAR</button>
       <button *appAdmin class="btn-login" routerLink="/admin">ADMIN</button>
       <span class="texto-usuario">{{ auth.emailUsuario() }}</span>
+      <app-campanita (click)="$event.stopPropagation()" />
       <button class="btn-login" (click)="cerrarSesion()">SALIR</button>
     } @else {
       <button class="btn-login" routerLink="/login">INGRESAR</button>
       <button class="btn-registro" routerLink="/registro">REGISTRARSE</button>
     }
   </div>
-</nav>

@@ -3,12 +3,14 @@
 
   <!-- Menú del panel. Cada sección nueva se suma acá. -->
   <nav class="admin-menu">
-    <a routerLink="/admin/peliculas" routerLinkActive="activo">PELÍCULAS</a>
-    <a routerLink="/admin/funciones" routerLinkActive="activo">FUNCIONES</a>
-    <a routerLink="/admin/productos" routerLinkActive="activo">PRODUCTOS</a>
-    <a routerLink="/admin/cupones" routerLinkActive="activo">CUPONES</a>
-    <a routerLink="/admin/recompensas" routerLinkActive="activo">RECOMPENSAS</a>
-    <a routerLink="/admin/reportes" routerLinkActive="activo">REPORTES</a>
+    <a *appPermiso="'peliculas'" routerLink="/admin/peliculas" routerLinkActive="activo">PELÍCULAS</a>
+    <a *appPermiso="'funciones'" routerLink="/admin/funciones" routerLinkActive="activo">FUNCIONES</a>
+    <a *appPermiso="'productos'" routerLink="/admin/productos" routerLinkActive="activo">PRODUCTOS</a>
+    <a *appPermiso="'cupones'" routerLink="/admin/cupones" routerLinkActive="activo">CUPONES</a>
+    <a *appPermiso="'recompensas'" routerLink="/admin/recompensas" routerLinkActive="activo">RECOMPENSAS</a>
+    <a *appPermiso="'propuestas'" routerLink="/admin/propuestas" routerLinkActive="activo">PROPUESTAS</a>
+    <a *appPermiso="'reportes'" routerLink="/admin/reportes" routerLinkActive="activo">REPORTES</a>
+    <a *appPermiso="'roles'" routerLink="/admin/roles" routerLinkActive="activo">ROLES</a>
   </nav>
 
   <!-- Acá se muestra la pantalla hija según la ruta -->

@@ -14,9 +14,14 @@
         <span>Crédito</span>
         <strong>{{ p.credito ?? 0 | currency:'ARS':'symbol-narrow':'1.0-0' }}</strong>
       </div>
+      <div class="tarjeta">
+        <span>Cartelera</span>
+        <strong>¿Querés ver una peli?</strong>
+        <a routerLink="/proponer">Proponer película</a>
+      </div>
     </div>
 
-        <h3>Mis compras</h3>
+    <h3>Mis compras</h3>
 
     @if (mensaje()) {
       <p class="mensaje">{{ mensaje() }}</p>
@@ -46,6 +51,22 @@
       </div>
     } @empty {
       <p class="vacio">Todavía no hiciste compras.</p>
+    }
+
+    @if (listasEspera().length > 0) {
+      <h3>Mis listas de espera</h3>
+      @for (e of listasEspera(); track e.id_espera) {
+        <div class="compra">
+          <div class="compra-datos">
+            <strong>{{ e.funciones?.peliculas?.titulo_de_pelicula }}</strong>
+            <span>{{ e.funciones?.fecha_hora_inicio | date:'dd/MM/yyyy HH:mm' }}</span>
+            <span class="estado">
+              {{ e.estado === 'NOTIFICADO' ? '¡Tu turno! Vence: ' + (e.vence | date:'HH:mm') : 'En lista de espera' }}
+            </span>
+          </div>
+          <button class="btn-cancelar" (click)="salirEspera(e.id_espera)">SALIR</button>
+        </div>
+      }
     }
 
     <h3>Mis canjes</h3>

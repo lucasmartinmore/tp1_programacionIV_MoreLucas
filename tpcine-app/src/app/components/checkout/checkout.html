@@ -43,7 +43,6 @@
 
     <div class="resumen">
       <div>Subtotal: {{ carrito.total() | currency:'ARS':'symbol-narrow':'1.0-0' }}</div>
-       <div>Subtotal: {{ carrito.total() | currency:'ARS':'symbol-narrow':'1.0-0' }}</div>
 
       @if (canjesEntrada().length > 0) {
         <label class="canje-check">
@@ -55,15 +54,19 @@
         <div class="descuento">Entrada gratis: -{{ descuentoCanje() | currency:'ARS':'symbol-narrow':'1.0-0' }}</div>
       }
 
+      @if (descuentoCombos() > 0) {
+        <div class="descuento">Entrada incluida en combo: -{{ descuentoCombos() | currency:'ARS':'symbol-narrow':'1.0-0' }}</div>
+      }
+
+      @if (descuentoPreventa() > 0) {
+        <div class="descuento">Precio de preventa: -{{ descuentoPreventa() | currency:'ARS':'symbol-narrow':'1.0-0' }}</div>
+      }
+
       @if (cupon(); as c) {
         <div class="descuento">{{ c.descripcion }} (-{{ c.porcentaje }}%): -{{ descuentoCupon() | currency:'ARS':'symbol-narrow':'1.0-0' }}</div>
       }
-      <div class="total">Total: {{ totalFinal() | currency:'ARS':'symbol-narrow':'1.0-0' }}</div>
 
-      @if (hayUsuario()) {
-        <div class="puntos-nuevos">Con esta compra sumás {{ totalFinal() }} puntos.</div>
-      }
-            @if (credito() > 0) {
+      @if (credito() > 0) {
         <label class="canje-check">
           <input type="checkbox" [checked]="usarCredito()" (change)="alternarCredito()">
           Usar mi crédito ({{ credito() | currency:'ARS':'symbol-narrow':'1.0-0' }} disponibles)
@@ -72,7 +75,12 @@
       @if (creditoAplicado() > 0) {
         <div class="descuento">Crédito usado: -{{ creditoAplicado() | currency:'ARS':'symbol-narrow':'1.0-0' }}</div>
       }
+
       <div class="total">Total: {{ totalFinal() | currency:'ARS':'symbol-narrow':'1.0-0' }}</div>
+
+      @if (hayUsuario()) {
+        <div class="puntos-nuevos">Con esta compra sumás {{ totalFinal() }} puntos.</div>
+      }
     </div>
 
     @if (!hayUsuario()) {

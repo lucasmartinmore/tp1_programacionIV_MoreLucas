@@ -4,6 +4,10 @@
   <label>Desde <input #desde type="date" [value]="desde"></label>
   <label>Hasta <input #hasta type="date" [value]="hasta"></label>
   <button (click)="generar(desde.value, hasta.value)">GENERAR</button>
+  @if (filas().length > 0) {
+    <button type="button" (click)="exportarExcel()">EXPORTAR EXCEL</button>
+    <button type="button" (click)="exportarPdf()">EXPORTAR PDF</button>
+  }
 </div>
 
 @if (mensaje()) {

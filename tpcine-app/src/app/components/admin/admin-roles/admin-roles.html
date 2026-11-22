@@ -1,0 +1,47 @@
+<h3>Crear rol</h3>
+
+<div class="form-admin">
+  <div class="campo">
+    <label>Nombre del rol</label>
+    <input #nombre placeholder="Ej: Vendedor, Programador...">
+  </div>
+
+  <div class="checks-secciones">
+    @for (s of secciones; track s) {
+      <label class="check-item">
+        <input type="checkbox" [checked]="elegidas().includes(s)" (change)="alternar(s)">
+        <span>{{ s }}</span>
+      </label>
+    }
+  </div>
+
+  @if (errorMensaje()) { <p class="error">{{ errorMensaje() }}</p> }
+  @if (mensaje()) { <p class="ok">{{ mensaje() }}</p> }
+
+  <button type="button" class="btn-guardar" (click)="crear(nombre)">CREAR ROL</button>
+</div>
+
+<h3>Asignar rol a usuarios</h3>
+
+<div class="lista-usuarios">
+  @for (u of usuarios(); track u.id_usuario) {
+    <div class="fila-usuario">
+  <div>
+    <strong>{{ u.nombre_usuario }} {{ u.apellido_usuario }}</strong>
+    <span class="rol-base">({{ u.rol_usuario }})</span>
+  </div>
+  @if (u.rol_usuario === 'admin') {
+    <span class="rol-base">Acceso total</span>
+  } @else {
+    <select #sel (change)="asignar(u.id_usuario, sel.value)">
+      <option value="">— sin rol —</option>
+      @for (r of roles(); track r.id_rol) {
+        <option [value]="r.id_rol" [selected]="u.rol_id === r.id_rol">
+          {{ r.nombre }} ({{ r.permisos.join(', ') }})
+        </option>
+      }
+    </select>
+  }
+</div>
+  }
+</div>

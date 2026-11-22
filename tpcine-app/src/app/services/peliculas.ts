@@ -15,7 +15,8 @@ export class Peliculas {
     =   Cartelera Princ       =
     ===========================
   */
-  // Me devuelve tambien los generos de cada pelicula (join con peliculas_generos y generos)
+  // Me devuelve tambien los generos de cada pelicula 
+  // (join con peliculas_generos y generos)
   getPeliculas() {
     return this.supabase
       .from('peliculas')
@@ -31,7 +32,8 @@ export class Peliculas {
     return this.supabase
       .from('peliculas')
       .select('*')
-      .eq('esta_en_cartelera', false);
+      .eq('esta_en_cartelera', false)
+      .order('fecha_estreno', { ascending: true });
   }
 
   /*===========================
@@ -64,12 +66,14 @@ export class Peliculas {
     ===========================
   */
 
-  // Traigo todos los generos disponibles (para los checkbox del formulario)
+  // Traigo todos los generos disponibles 
+  // (para los checkbox del formulario)
   getGeneros() {
     return this.supabase.from('generos').select('*').order('nombre');
   }
 
-  // Traigo los ids de los generos que ya tiene una pelicula (para tildarlos al editar)
+  // Traigo los ids de los generos que ya 
+  // tiene una pelicula (para tildarlos al editar)
   getGenerosDePelicula(idPelicula: string) {
     return this.supabase
       .from('peliculas_generos')
@@ -77,7 +81,8 @@ export class Peliculas {
       .eq('pelicula_id', idPelicula);
   }
 
-  // Reemplazo los generos de la pelicula: borro los que tenia y guardo los elegidos
+  // Reemplazo los generos de la pelicula
+  // borro los que tenia y guardo los elegidos
   async guardarGeneros(idPelicula: string, idsGeneros: number[]) {
     await this.supabase.from('peliculas_generos').delete().eq('pelicula_id', idPelicula);
 

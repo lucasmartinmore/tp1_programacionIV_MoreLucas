@@ -1,0 +1,22 @@
+<section class="proponer">
+  <h2>Proponé una película</h2>
+
+  <div class="form-caja">
+    <input #titulo placeholder="Título de la película">
+    <textarea #sinopsis rows="4" placeholder="¿De qué trata? ¿Por qué la querés ver?"></textarea>
+    <button (click)="enviar(titulo, sinopsis)">ENVIAR PROPUESTA</button>
+    @if (mensaje()) {
+      <p class="mensaje">{{ mensaje() }}</p>
+    }
+  </div>
+
+  <h3>Mis propuestas</h3>
+  @for (p of mias(); track p.id_propuesta) {
+    <div class="item-propuesta">
+      <span>{{ p.titulo }}</span>
+      <strong [class]="p.estado.toLowerCase()">{{ p.estado }}</strong>
+    </div>
+  } @empty {
+    <p class="vacio">Todavía no enviaste propuestas.</p>
+  }
+</section>

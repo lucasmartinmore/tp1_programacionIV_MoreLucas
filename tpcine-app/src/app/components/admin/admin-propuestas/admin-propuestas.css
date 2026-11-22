@@ -1,0 +1,23 @@
+.admin-propuestas { color: var(--color-crema, #fdf3dc); }
+h3 { color: var(--color-amarillo, #f7b218); margin-bottom: 16px; }
+.propuesta {
+  background-color: #12474a;
+  border: 1.5px solid var(--color-cyan-vintage, #2a9d8f);
+  border-radius: 6px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+.cabecera { display: flex; gap: 10px; align-items: baseline; margin-bottom: 6px; }
+.cabecera strong { color: var(--color-amarillo, #f7b218); font-size: 1.05rem; }
+.cabecera small { color: #72cbd8; }
+.acciones { display: flex; gap: 10px; margin-top: 10px; }
+.btn-aceptar, .btn-rechazar {
+  padding: 7px 14px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  border: 1px solid var(--color-amarillo, #f7b218);
+}
+.btn-aceptar { background-color: #15803d; color: #fff; }
+.btn-rechazar { background-color: var(--color-rojo-vintage, #a31432); color: #fff; }
+.vacio { color: #94a3b8; }

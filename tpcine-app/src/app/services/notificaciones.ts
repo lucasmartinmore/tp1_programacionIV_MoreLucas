@@ -1,0 +1,31 @@
+import { Service } from '@angular/core';
+import { createClient } from '@supabase/supabase-js';
+import { environment } from '../../environments/environments';
+
+@Service()
+export class Notificaciones {
+  private supabase;
+
+  constructor() {
+    this.supabase = createClient(environment.supabaseUrl, environment.supabasePublishableKey);
+  }
+
+  getMias() {
+    return this.supabase.from('notificaciones').select('*').order('creada', { ascending: false }).limit(20);
+  }
+
+  marcarLeida(id: number) {
+    return this.supabase.from('notificaciones').update({ leida: true }).eq('id_notificacion', id);
+  }
+
+  // Tiempo real: avisa cada vez que se inserta
+  // una notificación para este usuario
+  suscribir(idUsuario: string, alRecibir: (n: any) => void) {
+    return this.supabase
+      .channel('notif-' + idUsuario)
+      .on('postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'notificaciones', filter: 'usuario_id=eq.' + idUsuario },
+        (payload) => alRecibir(payload.new))
+      .subscribe();
+  }
+}

@@ -1,5 +1,5 @@
 import { Component, OnInit, signal } from '@angular/core';
-import { form, FormField, min, required } from '@angular/forms/signals';
+import { form, FormField, max, min, required } from '@angular/forms/signals';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Peliculas } from '../../../services/peliculas';
 
@@ -12,6 +12,7 @@ interface FormPelicula {
   restriccion_de_edad: string;
   esta_en_cartelera: boolean;
   fecha_estreno: string;
+  descuento_preventa: number;
 }
 
 @Component({
@@ -29,6 +30,7 @@ export class PeliculaForm implements OnInit {
     restriccion_de_edad: '0',
     esta_en_cartelera: true,
     fecha_estreno: '',
+    descuento_preventa: 0,
   });
 
   peliculaForm = form(this.peliculaModel, (schemaPath) => {
@@ -36,6 +38,8 @@ export class PeliculaForm implements OnInit {
     required(schemaPath.sinopsis_de_pelicula, { message: 'La sinopsis es obligatoria' });
     min(schemaPath.duracion_minutos, 1, { message: 'La duración debe ser mayor a 0' });
     required(schemaPath.imagen_url, { message: 'La imagen es obligatoria' });
+    min(schemaPath.descuento_preventa, 0, { message: 'Mínimo 0%' });
+    max(schemaPath.descuento_preventa, 100, { message: 'Máximo 100%' });
   });
 
   // Si hay un id en la ruta, estamos editando
@@ -45,7 +49,8 @@ export class PeliculaForm implements OnInit {
   errorMensaje = signal<string>('');
   enviando = signal<boolean>(false);
 
-  // Generos (van aparte del modelo del formulario, porque se guardan en otra tabla)
+  // Generos (van aparte del modelo del formulario
+  // porque se guardan en otra tabla)
   generos = signal<any[]>([]);                    // todos los generos disponibles
   generosElegidos = signal<number[]>([]);         // ids tildados
 
@@ -56,7 +61,8 @@ export class PeliculaForm implements OnInit {
   ) {}
 
   async ngOnInit() {
-    // Cargo los generos disponibles para armar los checkbox
+    // Cargo los generos disponibles
+    // para armar los checkbox
     const resultadoGeneros = await this.peliculasService.getGeneros();
     this.generos.set(resultadoGeneros.data || []);
 
@@ -66,13 +72,26 @@ export class PeliculaForm implements OnInit {
       this.modoEdicion.set(true);
       await this.cargarPelicula();
 
-      // Si es edicion, tildo los generos que la pelicula ya tiene
+      // Si es edicion 
+      // tildo los generos que la pelicula ya tiene
       const elegidos = await this.peliculasService.getGenerosDePelicula(this.idPelicula);
       this.generosElegidos.set((elegidos.data || []).map((fila: any) => fila['genero_id']));
+    } else {
+      // Si vengo de aceptar una propuesta en el admin
+      // precargo título y sinopsis
+      const q = this.route.snapshot.queryParamMap;
+      if (q.get('titulo')) {
+        this.peliculaModel.update((m) => ({
+          ...m,
+          titulo_de_pelicula: q.get('titulo')!,
+          sinopsis_de_pelicula: q.get('sinopsis') ?? '',
+        }));
+      }
     }
   }
 
-  // Traigo la pelicula de la base y completa el formulario
+  // Traigo la pelicula de la base 
+  // y completa el formulario
   async cargarPelicula() {
     const resultado = await this.peliculasService.getPeliculaById(this.idPelicula);
 
@@ -90,10 +109,12 @@ export class PeliculaForm implements OnInit {
       restriccion_de_edad: String(p['restriccion_de_edad']),
       esta_en_cartelera: p['esta_en_cartelera'],
       fecha_estreno: p['fecha_estreno'] ?? '',
+      descuento_preventa: p['descuento_preventa'] ?? 0,
     });
   }
 
-  // Si el genero ya estaba elegido lo saca, si no, lo agrega
+  // Si el genero ya estaba elegido lo saca
+  // si no, lo agrega
   alternarGenero(idGenero: number) {
     const actuales = this.generosElegidos();
     if (actuales.includes(idGenero)) {
@@ -125,6 +146,7 @@ export class PeliculaForm implements OnInit {
       restriccion_de_edad: Number(datos.restriccion_de_edad),
       esta_en_cartelera: datos.esta_en_cartelera,
       fecha_estreno: datos.fecha_estreno ? datos.fecha_estreno : null,
+      descuento_preventa: Number(datos.descuento_preventa || 0),
     };
 
     let error: any = null;
@@ -147,7 +169,8 @@ export class PeliculaForm implements OnInit {
       return;
     }
 
-    // Con la pelicula ya guardada, guardo sus generos
+    // Con la pelicula ya guardada
+    // guardo sus generos
     await this.peliculasService.guardarGeneros(idGuardada, this.generosElegidos());
 
     this.enviando.set(false);

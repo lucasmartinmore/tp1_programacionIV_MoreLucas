@@ -154,17 +154,34 @@ select:focus {
 }
 
 .btn-chico {
-  border: none;
+  background-color: #12474a;
+  border: 1px solid var(--color-amarillo);
   border-radius: 4px;
   padding: 6px 10px;
-  font-size: 0.75rem;
-  font-weight: bold;
+  font-family: var(--fuente-retro);
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
   cursor: pointer;
   color: var(--color-crema);
+  margin-right: 6px;
+  transition: all 0.15s ease;
+}
+
+.btn-chico:hover {
+  background-color: var(--color-amarillo);
+  color: #12474a;
 }
 
 .btn-chico.peligro {
   background-color: var(--color-rojo-vintage);
+  border-color: #ff7b54;
+  color: #fff;
+  margin-right: 0;
+}
+
+.btn-chico.peligro:hover {
+  background-color: #820f26;
+  color: #fff;
 }
 
 @media (max-width: 700px) {

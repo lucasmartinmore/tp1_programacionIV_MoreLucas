@@ -7,6 +7,33 @@
   @if (cargando()) {
     <p class="cargando">Cargando sala...</p>
   } @else {
+
+    @if (libres() === 0) {
+      <div class="panel-resumen">
+        <div>
+          <p><strong>Sala completa</strong></p>
+          @if (!miEspera()) {
+            <p>Si se libera un lugar por cancelación, te avisamos con 15 minutos para comprar.</p>
+          } @else if (miEspera().estado === 'ESPERANDO') {
+            <p>Estás anotado en la lista de espera.</p>
+          } @else if (miEspera().estado === 'NOTIFICADO') {
+            <p>¡Es tu turno! Tenés 15 minutos para elegir una butaca y comprar.</p>
+          } @else if (miEspera().estado === 'EXPIRADO') {
+            <p>Tu ventana de 15 minutos venció.</p>
+          }
+          @if (mensajeEspera()) {
+            <p>{{ mensajeEspera() }}</p>
+          }
+        </div>
+
+        @if (!miEspera()) {
+          <button class="btn-continuar" (click)="anotarmeEspera()">ANOTARME EN LISTA DE ESPERA</button>
+        } @else if (miEspera().estado === 'ESPERANDO') {
+          <button class="btn-continuar" (click)="salirEspera()">SALIR DE LA LISTA</button>
+        }
+      </div>
+    }
+
     <div class="mapa-grid">
       @for (fila of filas(); track fila.letra) {
         <div class="fila-asientos">
@@ -50,7 +77,7 @@
           <h4>Total: {{ precioTotal() | currency:'ARS':'symbol-narrow':'1.0-0' }}</h4>
         </div>
         <button class="btn-continuar" (click)="continuar()" [disabled]="butacasElegidas().length === 0">
-        CONTINUAR
+          CONTINUAR
         </button>
       </div>
     }

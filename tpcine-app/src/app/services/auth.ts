@@ -1,11 +1,13 @@
-import { Service, signal } from '@angular/core';
+import { Service, inject, signal } from '@angular/core';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { environment } from '../../environments/environments';
 import { DatosRegistro } from '../models/usuario';
+import { Permisos } from './permisos';
 
 @Service()
 export class Auth {
   private supabase: SupabaseClient;
+  private permisos = inject(Permisos);
 
   // Signals que lee el navbar: se actualizan solos al iniciar o cerrar sesión
   emailUsuario = signal<string | null>(null);
@@ -31,12 +33,14 @@ export class Auth {
 
     if (!usuario) {
       this.rolUsuario.set(null);
+      this.permisos.limpiar();
       return null;
     }
 
     const perfil = await this.getPerfil(usuario.id);
     const rol = perfil.data?.rol_usuario ?? null;
     this.rolUsuario.set(rol);
+    await this.permisos.cargar(usuario.id);
     return rol;
   }
 
@@ -65,6 +69,7 @@ export class Auth {
     const resultado = await this.supabase.auth.signOut();
     this.emailUsuario.set(null);
     this.rolUsuario.set(null);
+    this.permisos.limpiar();
     return resultado;
   }
 
@@ -76,7 +81,8 @@ export class Auth {
     return this.supabase.from('usuarios').select('*').eq('id_usuario', idUsuario).single();
   }
 
-  // Después del registro el rol queda en 'cliente' (valor por defecto de la tabla)
+  // Después del registro el rol queda en
+  // 'cliente' (valor por defecto de la tabla)
   async despuesDeRegistro() {
     await this.obtenerRol();
   }

@@ -18,7 +18,7 @@
 
 <div class="cartelera-contenedor">
 
-  <!-- CAMBIÓ: el título y el buscador ahora comparten fila -->
+  <!-- el título y el buscador ahora comparten fila -->
   <div class="cabecera-cartelera">
     <h2> Cartelera </h2>
 
@@ -54,6 +54,10 @@
 
           <div class="card-info">
             <h3 class="card-titulo">{{ peli.titulo_de_pelicula }}</h3>
+
+            @if (enPreventa(peli)) {
+              <span class="insignia-top">🔴 PREVENTA -{{ peli.descuento_preventa }}%</span>
+            }
 
             <p class="detalle-texto">
               <strong>Duración:</strong> {{ peli.duracion_minutos | duracion }}

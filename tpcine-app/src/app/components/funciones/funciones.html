@@ -21,6 +21,7 @@
       <div class="lista-chips">
         @for (f of funciones(); track f.id_funcion) {
           <button class="chip-horario" (click)="elegirFuncion(f.id_funcion)">
+            <span class="chip-fecha">{{ f.fecha_hora_inicio | date:'EEE dd/MM' }}</span>
             <span class="chip-hora">{{ formatearHora(f.fecha_hora_inicio) }}</span>
             <span class="chip-detalle">{{ f.formato_funcion }} · {{ f.idioma_funcion }}</span>
             <span class="chip-precio">${{ f.precio_base }}</span>

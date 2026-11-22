@@ -3,6 +3,7 @@ import { authGuard } from './guards/auth-guard';
 import { roleGuard } from './guards/role-guard';
 import { formGuard } from './guards/form-guard';
 import { personalGuard } from './guards/personal-guard';
+import { permisoGuard } from './guards/permiso-guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'peliculas', pathMatch: 'full' },
@@ -27,9 +28,15 @@ export const routes: Routes = [
     loadComponent: () => import('./components/proximamente/proximamente').then(m => m.Proximamente) 
   },
   { 
-    // Los puntos son de cada usuario: hay que estar logueado (si es una página informativa pública, sacá el canActivate)
+    // Los puntos son de cada usuario: hay que estar logueado 
+    // (si es una página informativa pública, sacá el canActivate)
     path: 'club-puntos', 
     loadComponent: () => import('./components/club-puntos/club-puntos').then(m => m.ClubPuntos),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'proponer',
+    loadComponent: () => import('./components/proponer-pelicula/proponer-pelicula').then(m => m.ProponerPelicula),
     canActivate: [authGuard]
   },
   {
@@ -43,7 +50,8 @@ export const routes: Routes = [
     canDeactivate: [formGuard]
   },
   {
-    // Para pagar hay que estar logueado: si no, authGuard lo manda a /login
+    // Para pagar hay que estar logueado
+    // si no, authGuard lo manda a /login
     path: 'checkout',
     loadComponent: () => import('./components/checkout/checkout').then(m => m.Checkout),
   },
@@ -52,52 +60,84 @@ export const routes: Routes = [
     loadComponent: () => import('./components/ticket/ticket').then(m => m.Ticket),
   },
 
-    {
+  {
     path: 'admin',
     loadComponent: () => import('./components/admin/admin').then(m => m.Admin),
-    // CanMatch: si el rol no es admin, la ruta "no existe" y cae en '**'
+    // CanMatch: si el rol no es admin
+    // la ruta "no existe" y cae en '**'
     canMatch: [roleGuard],
     children: [
-      { path: '', redirectTo: 'peliculas', pathMatch: 'full' },
       {
         path: 'peliculas',
+        canActivate: [permisoGuard],
+        data: { seccion: 'peliculas' },
         loadComponent: () => import('./components/admin/admin-peliculas/admin-peliculas').then(m => m.AdminPeliculas)
       },
       {
         path: 'peliculas/nueva',
+        canActivate: [permisoGuard],
+        data: { seccion: 'peliculas' },
         loadComponent: () => import('./components/admin/pelicula-form/pelicula-form').then(m => m.PeliculaForm)
       },
       {
         path: 'peliculas/:id/editar',
+        canActivate: [permisoGuard],
+        data: { seccion: 'peliculas' },
         loadComponent: () => import('./components/admin/pelicula-form/pelicula-form').then(m => m.PeliculaForm)
       },
       {
         path: 'funciones',
+        canActivate: [permisoGuard],
+        data: { seccion: 'funciones' },
         loadComponent: () => import('./components/admin/admin-funciones/admin-funciones').then(m => m.AdminFunciones)
       },
-            {
+      {
         path: 'productos',
+        canActivate: [permisoGuard],
+        data: { seccion: 'productos' },
         loadComponent: () => import('./components/admin/admin-productos/admin-productos').then(m => m.AdminProductos)
       },
       {
         path: 'productos/nuevo',
+        canActivate: [permisoGuard],
+        data: { seccion: 'productos' },
         loadComponent: () => import('./components/admin/producto-form/producto-form').then(m => m.ProductoForm)
       },
       {
         path: 'productos/:id/editar',
+        canActivate: [permisoGuard],
+        data: { seccion: 'productos' },
         loadComponent: () => import('./components/admin/producto-form/producto-form').then(m => m.ProductoForm)
       },
       {
         path: 'cupones',
+        canActivate: [permisoGuard],
+        data: { seccion: 'cupones' },
         loadComponent: () => import('./components/admin/admin-cupones/admin-cupones').then(m => m.AdminCupones)
       },
       {
         path: 'reportes',
+        canActivate: [permisoGuard],
+        data: { seccion: 'reportes' },
         loadComponent: () => import('./components/admin/admin-reportes/admin-reportes').then(m => m.AdminReportes)
       },
       {
         path: 'recompensas',
+        canActivate: [permisoGuard],
+        data: { seccion: 'recompensas' },
         loadComponent: () => import('./components/admin/admin-recompensas/admin-recompensas').then(m => m.AdminRecompensas)
+      },
+      {
+        path: 'propuestas',
+        canActivate: [permisoGuard],
+        data: { seccion: 'propuestas' },
+        loadComponent: () => import('./components/admin/admin-propuestas/admin-propuestas').then(m => m.AdminPropuestas)
+      },
+      {
+        path: 'roles',
+        canActivate: [permisoGuard],
+        data: { seccion: 'roles' },
+        loadComponent: () => import('./components/admin/admin-roles/admin-roles').then(m => m.AdminRoles)
       },
     ]
   },

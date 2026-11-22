@@ -1,0 +1,19 @@
+<div class="admin-propuestas">
+  <h3>Propuestas pendientes de clientes</h3>
+
+  @for (p of lista(); track p.id_propuesta) {
+    <div class="propuesta">
+      <div class="cabecera">
+        <strong>{{ p.titulo }}</strong>
+        <small>por {{ p.usuarios?.nombre_usuario || 'Cliente' }}</small>
+      </div>
+      <p>{{ p.sinopsis }}</p>
+      <div class="acciones">
+        <button class="btn-aceptar" (click)="aceptar(p)">ACEPTAR Y CARGAR</button>
+        <button class="btn-rechazar" (click)="rechazar(p)">RECHAZAR</button>
+      </div>
+    </div>
+  } @empty {
+    <p class="vacio">No hay propuestas pendientes.</p>
+  }
+</div>
