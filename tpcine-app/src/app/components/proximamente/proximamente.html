@@ -4,6 +4,10 @@
     <p class="subtitulo">Los estrenos más esperados que están por llegar a Cinemore.</p>
   </div>
 
+  @if (mensaje()) {
+    <p class="mensaje-alerta">{{ mensaje() }}</p>
+  }
+
   @if (cargando()) {
     <div class="cargando">
       <p>Cargando próximos estrenos...</p>
@@ -23,7 +27,7 @@
 
           <div class="card-info">
             <h3 class="card-titulo">{{ peli.titulo_de_pelicula }}</h3>
-            
+
             <p class="detalle-texto">
               <strong>Duración:</strong> {{ peli.duracion_minutos }} min
             </p>
@@ -32,8 +36,8 @@
             </p>
             <p class="sinopsis">{{ peli.sinopsis_de_pelicula }}</p>
 
-            <button class="btn-alerta" (click)="activarAlerta(peli.titulo_de_pelicula)">
-              ACTIVAR ALERTA
+            <button class="btn-alerta" [class.activa]="tieneAlerta(peli.id_pelicula)" (click)="alternarAlerta(peli)">
+              {{ tieneAlerta(peli.id_pelicula) ? 'ALERTA ACTIVADA ✓' : 'ACTIVAR ALERTA' }}
             </button>
           </div>
         </div>

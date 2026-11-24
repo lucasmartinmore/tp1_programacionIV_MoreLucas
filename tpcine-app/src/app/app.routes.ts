@@ -139,6 +139,18 @@ export const routes: Routes = [
         data: { seccion: 'roles' },
         loadComponent: () => import('./components/admin/admin-roles/admin-roles').then(m => m.AdminRoles)
       },
+      {
+        path: 'log',
+        canActivate: [permisoGuard],
+        data: { seccion: 'log' },
+        loadComponent: () => import('./components/admin/admin-log/admin-log').then(m => m.AdminLog)
+      },
+      {
+        path: 'graficos',
+        canActivate: [permisoGuard],
+        data: { seccion: 'graficos' },
+        loadComponent: () => import('./components/admin/admin-graficos/admin-graficos').then(m => m.AdminGraficos)
+      },
     ]
   },
   {
@@ -149,6 +161,11 @@ export const routes: Routes = [
   {
     path: 'perfil',
     loadComponent: () => import('./components/perfil/perfil').then(m => m.Perfil),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'mis-peliculas',
+    loadComponent: () => import('./components/mis-peliculas/mis-peliculas').then(m => m.MisPeliculas),
     canActivate: [authGuard]
   },
   { 

@@ -128,3 +128,19 @@
   background-color: var(--color-amarillo, #ee9b00);
   color: #12474a;
 }
+
+.mensaje-alerta {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  max-width: 90vw;
+  text-align: center;
+  background-color: #0b1f28;
+  border: 2px solid var(--color-amarillo, #f7a827);
+  border-radius: 8px;
+  padding: 12px 20px;
+  color: var(--color-crema, #fdf3dc);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}

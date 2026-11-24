@@ -93,3 +93,13 @@ h3 { color: var(--color-crema); margin: 26px 0 10px; }
 }
 
 .mensaje { color: var(--color-amarillo); margin-bottom: 10px; }
+
+.link-peliculas {
+  display: inline-block;
+  margin: 14px 0 0 0;
+  color: var(--color-amarillo);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.link-peliculas:hover { text-decoration: underline; }

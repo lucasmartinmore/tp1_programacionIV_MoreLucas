@@ -21,4 +21,24 @@ export class Reportes {
       .lte('creado_dia', hasta + 'T23:59:59')
       .order('creado_dia');
   }
+
+  // Entradas vendidas desde una fecha
+  // con el título de la película (join anidado)
+  getEntradasDesde(desdeISO: string) {
+    return this.supabase
+      .from('compras_entradas')
+      .select('entradas(funciones(peliculas(titulo_de_pelicula)))')
+      .eq('estado_de_compra', 'COMPLETADA')
+      .gte('creado_dia', desdeISO);
+  }
+
+  // Candy vendida desde una fecha. "!inner" obliga a que
+  // exista la compra y permite filtrar por ella
+  getCandyDesde(desdeISO: string) {
+    return this.supabase
+      .from('compras_candy')
+      .select('cantidad, productos_candy(nombre_producto), compras_entradas!inner(creado_dia, estado_de_compra)')
+      .eq('compras_entradas.estado_de_compra', 'COMPLETADA')
+      .gte('compras_entradas.creado_dia', desdeISO);
+  }
 }

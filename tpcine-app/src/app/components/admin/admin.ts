@@ -13,7 +13,7 @@ export class Admin implements OnInit {
   private permisos = inject(Permisos);
   private router = inject(Router);
 
-  private todas = ['peliculas', 'funciones', 'productos', 'cupones', 'recompensas', 'propuestas', 'reportes', 'roles'];
+  private todas = ['peliculas', 'funciones', 'productos', 'cupones', 'recompensas', 'propuestas', 'reportes', 'graficos', 'log', 'roles'];
 
   ngOnInit() {
     if (this.router.url === '/admin') {

@@ -1,6 +1,7 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { Auth } from '../../services/auth';
 import { Notificaciones } from '../../services/notificaciones';
 
@@ -10,9 +11,12 @@ import { Notificaciones } from '../../services/notificaciones';
   styleUrl: './campanita.css',
   templateUrl: './campanita.html',
 })
-export class Campanita implements OnInit {
+export class Campanita implements OnInit, OnDestroy {
   lista = signal<any[]>([]);
   abierta = signal<boolean>(false);
+
+  // La suscripción al realtime: la guardo para poder cerrarla al destruir el componente
+  private suscripcion?: Subscription;
 
   constructor(private auth: Auth, private notificaciones: Notificaciones, private router: Router) {}
 
@@ -32,12 +36,21 @@ export class Campanita implements OnInit {
 
     // Al llegar una fila nueva por Realtime
     // la sumamos arriba de la lista con Signal 
-    this.notificaciones.suscribir(usuario.id, (nueva) => {
-      this.lista.set([nueva, ...this.lista()]);
-      if ('Notification' in window && Notification.permission === 'granted') {
-        new Notification(nueva['titulo'], { body: nueva['mensaje'] });
-      }
+    this.suscripcion = this.notificaciones.getNuevasRealtime(usuario.id).subscribe({
+      next: (nueva) => {
+        this.lista.set([nueva, ...this.lista()]);
+        if ('Notification' in window && Notification.permission === 'granted') {
+          new Notification(nueva['titulo'], { body: nueva['mensaje'] });
+        }
+      },
+      error: (error) => console.error('Error de realtime:', error),
     });
+  }
+
+  // Al cerrar sesión el navbar destruye la campanita
+  // acá se cierra el canal de realtime
+  ngOnDestroy() {
+    this.suscripcion?.unsubscribe();
   }
 
   async cargar() {

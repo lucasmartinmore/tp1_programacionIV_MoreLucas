@@ -24,4 +24,12 @@ export class Resenas {
       .from('resenas')
       .upsert([datos], { onConflict: 'pelicula_id,usuario_id' });
   }
+
+  // Solo las estrellas que puso este usuario (para mostrarlas en "Mis películas")
+  getMisResenas(idUsuario: string) {
+    return this.supabase
+      .from('resenas')
+      .select('pelicula_id, estrellas')
+      .eq('usuario_id', idUsuario);
+  }
 }

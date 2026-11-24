@@ -1,6 +1,7 @@
 import { Service } from '@angular/core';
 import { createClient } from '@supabase/supabase-js';
 import { environment } from '../../environments/environments';
+import { Observable } from 'rxjs';
 
 @Service()
 export class Notificaciones {
@@ -27,5 +28,26 @@ export class Notificaciones {
         { event: 'INSERT', schema: 'public', table: 'notificaciones', filter: 'usuario_id=eq.' + idUsuario },
         (payload) => alRecibir(payload.new))
       .subscribe();
+  }
+
+  // Igual que getOcupadasRealtime(): emite cada notificación nueva
+  // y cierra el canal al desuscribir
+  getNuevasRealtime(idUsuario: string) {
+    return new Observable<any>((observer) => {
+      const channel = this.supabase
+        .channel('notif-' + idUsuario)
+        .on('postgres_changes',
+          { event: 'INSERT', schema: 'public', table: 'notificaciones', filter: 'usuario_id=eq.' + idUsuario },
+          (payload) => observer.next(payload.new))
+        .subscribe((status) => {
+          if (status === 'CHANNEL_ERROR') {
+            observer.error(new Error('No se pudo suscribir al canal realtime.'));
+          }
+        });
+
+      return () => {
+        void this.supabase.removeChannel(channel);
+      };
+    });
   }
 }

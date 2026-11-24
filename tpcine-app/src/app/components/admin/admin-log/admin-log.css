@@ -1,0 +1,6 @@
+.ayuda { color: #94a3b8; margin-bottom: 14px; }
+.tabla-scroll { overflow-x: auto; }
+.tabla { width: 100%; border-collapse: collapse; background-color: var(--color-card, #0b1f28); border-radius: 8px; }
+.tabla th, .tabla td { padding: 8px 10px; text-align: left; border-bottom: 1px solid rgba(253, 243, 220, 0.12); font-size: 0.85rem; }
+.tabla th { color: var(--color-amarillo, #f7b218); }
+.detalle { max-width: 360px; word-break: break-all; color: #94a3b8; }

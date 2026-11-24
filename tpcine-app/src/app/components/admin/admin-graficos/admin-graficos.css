@@ -1,0 +1,25 @@
+.periodo { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+
+.periodo button {
+  background: transparent;
+  color: var(--color-crema, #fdf3dc);
+  border: 1px solid var(--color-cyan-vintage, #72cbd8);
+  border-radius: 999px;
+  padding: 6px 14px;
+  cursor: pointer;
+}
+.periodo button.activo { background: var(--color-amarillo, #f7b218); color: #241a15; border-color: var(--color-amarillo, #f7b218); }
+
+h3 { color: var(--color-amarillo, #f7b218); margin: 22px 0 10px; }
+
+.fila { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.nombre { width: 170px; flex-shrink: 0; font-size: 0.9rem; }
+.pista { flex: 1; background-color: var(--color-card, #0b1f28); border-radius: 6px; height: 22px; overflow: hidden; }
+.barra { height: 100%; background-color: var(--color-cyan-vintage, #72cbd8); border-radius: 6px; min-width: 4px; transition: width 0.4s ease; }
+.barra.naranja { background-color: #e43f17; }
+.vacio { color: #94a3b8; }
+
+@media (max-width: 600px) {
+  .fila { flex-wrap: wrap; }
+  .nombre { width: 100%; }
+}

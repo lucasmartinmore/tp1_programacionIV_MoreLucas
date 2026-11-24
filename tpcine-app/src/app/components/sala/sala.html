@@ -8,28 +8,34 @@
     <p class="cargando">Cargando sala...</p>
   } @else {
 
-    @if (libres() === 0) {
+    @if (mostrarPanelEspera()) {
       <div class="panel-resumen">
         <div>
-          <p><strong>Sala completa</strong></p>
-          @if (!miEspera()) {
-            <p>Si se libera un lugar por cancelación, te avisamos con 15 minutos para comprar.</p>
-          } @else if (miEspera().estado === 'ESPERANDO') {
-            <p>Estás anotado en la lista de espera.</p>
-          } @else if (miEspera().estado === 'NOTIFICADO') {
-            <p>¡Es tu turno! Tenés 15 minutos para elegir una butaca y comprar.</p>
-          } @else if (miEspera().estado === 'EXPIRADO') {
-            <p>Tu ventana de 15 minutos venció.</p>
+          @if (estoyNotificado()) {
+            <p><strong>¡Es tu turno!</strong></p>
+            <p>Se liberó un lugar. Tenés {{ textoVentana }} para elegir tu butaca y comprar.</p>
+          } @else if (estoyVencido()) {
+            <p><strong>Se venció tu turno</strong></p>
+            <p>Pasó el tiempo de {{ textoVentana }}. El lugar quedó libre para todos.</p>
+          } @else {
+            <p><strong>Sala completa</strong></p>
+            @if (esperando()) {
+              <p>Estás anotado en la lista de espera. Te avisamos si se libera un lugar.</p>
+            } @else {
+              <p>Si se libera un lugar por cancelación, te avisamos y tenés {{ textoVentana }} para comprar.</p>
+            }
           }
           @if (mensajeEspera()) {
             <p>{{ mensajeEspera() }}</p>
           }
         </div>
 
-        @if (!miEspera()) {
-          <button class="btn-continuar" (click)="anotarmeEspera()">ANOTARME EN LISTA DE ESPERA</button>
-        } @else if (miEspera().estado === 'ESPERANDO') {
+        @if (esperando()) {
           <button class="btn-continuar" (click)="salirEspera()">SALIR DE LA LISTA</button>
+        } @else if (puedeAnotarse()) {
+          <button class="btn-continuar" (click)="anotarmeEspera()">
+            {{ miEspera() ? 'ANOTARME DE NUEVO' : 'ANOTARME EN LISTA DE ESPERA' }}
+          </button>
         }
       </div>
     }
@@ -69,7 +75,7 @@
     @if (butacasElegidas().length > 0) {
       <div class="panel-resumen">
         <div>
-          <p><strong>Butacas:</strong> 
+          <p><strong>Butacas:</strong>
             @for (b of butacasElegidas(); track b.id_butaca) {
               <span class="chip-butaca">{{ b.fila }}{{ b.columna }}</span>
             }

@@ -1,0 +1,32 @@
+<h2>Gráficos de ventas</h2>
+
+<div class="periodo">
+  <button [class.activo]="periodo() === 'semana'" (click)="elegir('semana')">ÚLTIMA SEMANA</button>
+  <button [class.activo]="periodo() === 'mes'" (click)="elegir('mes')">ÚLTIMO MES</button>
+</div>
+
+<h3> Películas más vistas</h3>
+@for (b of peliculas(); track b.nombre) {
+  <div class="fila">
+    <span class="nombre">{{ b.nombre }}</span>
+    <div class="pista">
+      <div class="barra" [style.width.%]="ancho(b, peliculas())"></div>
+    </div>
+    <strong>{{ b.valor }}</strong>
+  </div>
+} @empty {
+  <p class="vacio">Sin ventas en el período.</p>
+}
+
+<h3> Productos más vendidos</h3>
+@for (b of productos(); track b.nombre) {
+  <div class="fila">
+    <span class="nombre">{{ b.nombre }}</span>
+    <div class="pista">
+      <div class="barra naranja" [style.width.%]="ancho(b, productos())"></div>
+    </div>
+    <strong>{{ b.valor }}</strong>
+  </div>
+} @empty {
+  <p class="vacio">Sin ventas en el período.</p>
+}

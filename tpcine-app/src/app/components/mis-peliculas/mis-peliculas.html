@@ -1,0 +1,32 @@
+<div class="mis-contenedor">
+  <h2>Mis películas</h2>
+  <p class="subtitulo">Tu historial de funciones y las calificaciones que dejaste</p>
+
+  @if (cargando()) {
+    <p class="vacio">Cargando tu historial...</p>
+  } @else {
+    <div class="grid-mis-peliculas">
+      @for (p of lista(); track p.id) {
+        <div class="card-mia" [appHoverZoom]="1.03">
+          <div class="poster-contenedor">
+            <img [src]="p.imagen || 'https://via.placeholder.com/300x450'" [alt]="p.titulo" class="poster" />
+          </div>
+
+          <div class="card-info">
+            <h3 class="card-titulo">{{ p.titulo }}</h3>
+            <p class="detalle-texto">{{ esFutura(p.fecha) ? 'Próxima' : 'Vista' }}: {{ p.fecha | date:'dd/MM/yyyy' }}</p>
+
+            @if (p.estrellas > 0) {
+              <p class="estrellas">{{ estrellas(p.estrellas) }}</p>
+            } @else {
+              <p class="sin-calificar">Todavía no la calificaste</p>
+              <a class="btn-calificar" [routerLink]="['/funciones', p.id]">CALIFICAR</a>
+            }
+          </div>
+        </div>
+      } @empty {
+        <p class="vacio">Todavía no compraste entradas. <a routerLink="/peliculas">Ver cartelera</a></p>
+      }
+    </div>
+  }
+</div>

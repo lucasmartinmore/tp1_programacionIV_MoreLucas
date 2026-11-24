@@ -63,6 +63,16 @@ export class Compras {
       .order('creado_dia', { ascending: false });
   }
 
+  // Las películas de mis compras completadas (con póster y fecha de la función).
+  // Es un join anidado: compra -> entradas -> funciones -> peliculas
+  getMisPeliculas(idUsuario: string) {
+    return this.supabase
+      .from('compras_entradas')
+      .select('id_compra_entrada, entradas ( funciones ( fecha_hora_inicio, peliculas ( id_pelicula, titulo_de_pelicula, imagen_url ) ) )')
+      .eq('usuario_id', idUsuario)
+      .eq('estado_de_compra', 'COMPLETADA');
+  }
+
   // Cancela la compra y devuelve 
   // el credito acreditado (lo calcula la base)
   cancelarConCredito(idCompra: string) {
