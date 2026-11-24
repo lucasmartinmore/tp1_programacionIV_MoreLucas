@@ -1,18 +1,65 @@
 <h2>Cupones de descuento</h2>
-<p class="ayuda">Se aplican solos en el checkout. Si a un cliente le corresponden dos, se usa el de mayor porcentaje.</p>
+<p class="ayuda">
+  Se aplican solos en el checkout según a quién le corresponden. Si a un cliente le corresponden varios, se usa el de mayor porcentaje.
+</p>
 
+<h3>Cupones existentes</h3>
 @for (c of cupones(); track c.codigo) {
   <div class="fila">
     <div class="info">
       <strong>{{ c.codigo }}</strong>
       <span>{{ c.descripcion }}</span>
+      <span class="condicion">{{ textoCondicion(c) }}</span>
     </div>
-    <!-- #pct y #act son variables de plantilla: apuntan al input de esta fila -->
+    <!-- #pct y #act apuntan a los campos de esta fila -->
     <input #pct type="number" min="0" max="100" [value]="c.porcentaje"> %
     <label><input #act type="checkbox" [checked]="c.activo"> Activo</label>
     <button (click)="guardar(c, pct.value, act.checked)">GUARDAR</button>
+    <button class="peligro" (click)="eliminar(c)">BORRAR</button>
   </div>
+} @empty {
+  <p>Todavía no hay cupones.</p>
 }
+
+<h3>Nuevo cupón</h3>
+<div class="nuevo">
+  <div class="campo">
+    <label>Código</label>
+    <input type="text" placeholder="Ej: DIA_DEL_CINE" [value]="nuevoCodigo()" (input)="nuevoCodigo.set(valorDe($event))">
+  </div>
+
+  <div class="campo">
+    <label>Descripción</label>
+    <input type="text" placeholder="Ej: Descuento día del cine" [value]="nuevaDescripcion()" (input)="nuevaDescripcion.set(valorDe($event))">
+  </div>
+
+  <div class="campo chico">
+    <label>Porcentaje</label>
+    <input type="number" min="1" max="100" [value]="nuevoPorcentaje()" (input)="nuevoPorcentaje.set(valorDe($event))">
+  </div>
+
+  <div class="campo">
+    <label>¿A quién le corresponde?</label>
+    <select (change)="nuevaCondicion.set(valorDe($event))">
+      <option value="GENERAL" [selected]="nuevaCondicion() === 'GENERAL'">Todos los usuarios registrados</option>
+      <option value="PRIMERA_COMPRA" [selected]="nuevaCondicion() === 'PRIMERA_COMPRA'">Primera compra</option>
+      <option value="EDAD_MINIMA" [selected]="nuevaCondicion() === 'EDAD_MINIMA'">Mayores de una edad</option>
+    </select>
+  </div>
+
+  @if (nuevaCondicion() === 'EDAD_MINIMA') {
+    <div class="campo chico">
+      <label>Mayores de</label>
+      <input type="number" min="1" [value]="nuevaEdad()" (input)="nuevaEdad.set(valorDe($event))">
+    </div>
+  }
+
+  <label class="check">
+    <input type="checkbox" [checked]="nuevoActivo()" (change)="nuevoActivo.set(checkedDe($event))"> Activo
+  </label>
+
+  <button (click)="crear()">CREAR CUPÓN</button>
+</div>
 
 @if (mensaje()) {
   <p class="mensaje">{{ mensaje() }}</p>

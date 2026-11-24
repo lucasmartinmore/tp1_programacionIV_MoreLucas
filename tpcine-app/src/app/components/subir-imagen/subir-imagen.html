@@ -1,0 +1,14 @@
+<div class="subir">
+  <label class="btn-subir">
+    {{ subiendo() ? 'SUBIENDO...' : 'SUBIR IMAGEN DESDE PC' }}
+    <input type="file" accept="image/jpeg,image/png,image/webp" (change)="elegir($event)" [disabled]="subiendo()" hidden>
+  </label>
+
+  @if (urlActual()) {
+    <img class="vista-previa" [src]="urlActual()" alt="Vista previa">
+  }
+
+  @if (mensaje()) {
+    <span class="mensaje">{{ mensaje() }}</span>
+  }
+</div>

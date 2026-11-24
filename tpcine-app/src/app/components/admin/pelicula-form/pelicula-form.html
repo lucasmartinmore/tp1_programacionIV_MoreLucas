@@ -57,6 +57,9 @@
         <span class="error">La imagen es obligatoria.</span>
       }
     </div>
+        <div class="campo ancho-completo">
+      <app-subir-imagen carpeta="peliculas" [urlActual]="peliculaModel().imagen_url" (urlSubida)="ponerImagen($event)" />
+    </div>
 
     <div class="campo">
       <label>Fecha de estreno</label>

@@ -2,6 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { form, FormField, min, required } from '@angular/forms/signals';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CandyService } from '../../../services/candys';
+import { SubirImagen } from '../../subir-imagen/subir-imagen';
 
 // Los datos que maneja el formulario
 interface FormProducto {
@@ -15,7 +16,7 @@ interface FormProducto {
 }
 
 @Component({
-  imports: [FormField, RouterLink],
+  imports: [FormField, RouterLink, SubirImagen],
   selector: 'app-producto-form',
   styleUrl: './producto-form.css',
   templateUrl: './producto-form.html',
@@ -68,6 +69,10 @@ export class ProductoForm implements OnInit {
     const resultado = await this.candyService.getProductosAdmin();
     const lista: string[] = (resultado.data || []).map((p: any) => p['categoria_producto']);
     this.categorias.set(Array.from(new Set(lista)));
+  }
+
+  ponerImagen(url: string) {
+    this.productoModel.update(m => ({ ...m, imagen_url: url }));
   }
 
   // Trae el producto de la base y completa el formulario

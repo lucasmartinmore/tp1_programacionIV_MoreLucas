@@ -62,10 +62,11 @@ export class Checkout implements OnInit {
     }
   }
 
-  // Calcula la edad y elige el mejor cupon disponible
+    // Calcula la edad, elige el mejor cupón que le corresponde y trae sus canjes
   private async cargarDatosDelUsuario(idUsuario: string) {
     const perfil = await this.auth.getPerfil(idUsuario);
     this.credito.set(Number(perfil.data?.['credito'] ?? 0));
+
     const fecha = perfil.data?.['fecha_de_nacimiento'];
     if (fecha) {
       this.edad.set(this.calcularEdad(fecha));
@@ -73,25 +74,23 @@ export class Checkout implements OnInit {
 
     const resultadoCupones = await this.cuponesService.getTodosLosCupones();
     const cupones = (resultadoCupones.data || []).filter((c: any) => c['activo']);
-
-    // Armo la lista de cupones que le corresponden 
-    // y me quedo con el de mayor porcentaje
-    const candidatos: any[] = [];
-
     const cantidadCompras = await this.compras.contarComprasDelUsuario(idUsuario);
-    if (cantidadCompras === 0) {
-      const primera = cupones.find((c: any) => c['codigo'] === 'PRIMERA_COMPRA');
-      if (primera) candidatos.push(primera);
-    }
 
-    if (this.edad() !== null && this.edad()! > 50) {
-      const mayores = cupones.find((c: any) => c['codigo'] === 'MAYORES_50');
-      if (mayores) candidatos.push(mayores);
-    }
-
+    // Reviso cada cupón activo: si le corresponde
+    // me quedo con el de mayor porcentaje
     let mejor: any = null;
-    for (const c of candidatos) {
-      if (mejor === null || c['porcentaje'] > mejor['porcentaje']) {
+    for (const c of cupones) {
+      let corresponde = false;
+
+      if (c['condicion'] === 'PRIMERA_COMPRA') {
+        corresponde = cantidadCompras === 0;
+      } else if (c['condicion'] === 'EDAD_MINIMA') {
+        corresponde = this.edad() !== null && this.edad()! > c['edad_minima'];
+      } else if (c['condicion'] === 'GENERAL') {
+        corresponde = true;
+      }
+
+      if (corresponde && (mejor === null || c['porcentaje'] > mejor['porcentaje'])) {
         mejor = c;
       }
     }
@@ -103,6 +102,7 @@ export class Checkout implements OnInit {
         descripcion: mejor['descripcion'],
       });
     }
+
     const canjes = await this.recompensasService.getCanjesEntradaDisponibles(idUsuario);
     this.canjesEntrada.set(canjes.data || []);
   }

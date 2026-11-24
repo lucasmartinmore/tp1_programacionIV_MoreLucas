@@ -1,17 +1,48 @@
+h3 { color: var(--color-crema, #fdf3dc); margin: 22px 0 10px; }
+
 .fila {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   flex-wrap: wrap;
-  background-color: var(--color-card);
-  border: 1px solid var(--color-cyan-vintage);
+  background-color: var(--color-card, #0b1f28);
+  border: 1px solid var(--color-cyan-vintage, #72cbd8);
   border-radius: 8px;
   padding: 12px 16px;
   margin-bottom: 10px;
 }
 
-.info { flex: 1; display: flex; flex-direction: column; min-width: 200px; }
-input[type="number"] { width: 70px; padding: 6px; }
-button { background: var(--color-naranja); color: #fff; border: none; border-radius: 6px; padding: 8px 14px; cursor: pointer; }
+.info { flex: 1; display: flex; flex-direction: column; min-width: 220px; }
+.condicion { font-size: 0.8rem; color: #72cbd8; }
+
+input[type="number"] { width: 80px; padding: 6px; }
+
+.nuevo {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  flex-wrap: wrap;
+  background-color: var(--color-card, #0b1f28);
+  border: 1px dashed var(--color-amarillo, #f7a827);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.campo { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 180px; }
+.campo.chico { flex: 0; min-width: 100px; }
+.campo label { font-size: 0.85rem; color: #94a3b8; }
+.campo input, .campo select { padding: 8px; border-radius: 6px; width: 100%; }
+.check { display: flex; align-items: center; gap: 6px; }
+
+button {
+  background: var(--color-naranja, #e64c23);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+button.peligro { background: var(--color-rojo-vintage, #a3122d); }
+
 .ayuda { color: #94a3b8; margin-bottom: 14px; }
-.mensaje { color: var(--color-amarillo); margin-top: 10px; }
+.mensaje { color: var(--color-amarillo, #f7a827); margin-top: 12px; }

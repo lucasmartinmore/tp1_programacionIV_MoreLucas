@@ -2,6 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { form, FormField, max, min, required } from '@angular/forms/signals';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Peliculas } from '../../../services/peliculas';
+import { SubirImagen } from '../../subir-imagen/subir-imagen';
 
 // Los datos que maneja el formulario
 interface FormPelicula {
@@ -16,7 +17,7 @@ interface FormPelicula {
 }
 
 @Component({
-  imports: [FormField, RouterLink],
+  imports: [FormField, RouterLink, SubirImagen],
   selector: 'app-pelicula-form',
   styleUrl: './pelicula-form.css',
   templateUrl: './pelicula-form.html',
@@ -175,5 +176,10 @@ export class PeliculaForm implements OnInit {
 
     this.enviando.set(false);
     this.router.navigate(['/admin/peliculas']);
+  }
+    // Cuando se sube una imagen, la
+    // URL queda cargada en el formulario
+  ponerImagen(url: string) {
+    this.peliculaModel.update(m => ({ ...m, imagen_url: url }));
   }
 }

@@ -14,10 +14,18 @@ export class Cupones {
     return this.supabase.from('cupones').select('*').order('codigo');
   }
 
+  crearCupon(datos: any) {
+    return this.supabase.from('cupones').insert([datos]);
+  }
+
   actualizarCupon(codigo: string, porcentaje: number, activo: boolean) {
     return this.supabase
       .from('cupones')
       .update({ porcentaje: porcentaje, activo: activo })
       .eq('codigo', codigo);
+  }
+
+  eliminarCupon(codigo: string) {
+    return this.supabase.from('cupones').delete().eq('codigo', codigo);
   }
 }

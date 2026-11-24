@@ -52,6 +52,9 @@
         <span class="error">La imagen es obligatoria.</span>
       }
     </div>
+        <div class="campo ancho-completo">
+      <app-subir-imagen carpeta="candy" [urlActual]="productoModel().imagen_url" (urlSubida)="ponerImagen($event)" />
+    </div>
 
   </div>
 
